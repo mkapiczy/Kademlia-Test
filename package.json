@@ -1,0 +1,11 @@
+{
+    "name": "Kademlia",
+    "version": "1.0.0",
+    "description": "A node.js implementation of Kademlia",
+    "main": "index.js",
+    "author": "",
+    "license": "MIT",
+    "dependencies" : {
+        "http":"0.0.0"
+    }
+  }
