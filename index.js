@@ -9,6 +9,15 @@ const util = require('./lib/util');
 const KBucket = require('./lib/kbucket');
 const Rpc = require('./lib/rpc');
 
+var swaggerTools = require('swagger-tools');
+var YAML = require('yamljs');
+var swaggerDoc = YAML.load('openapi.yaml');
+
+swaggerTools.initializeMiddleware(swaggerDoc, function (middleware) {
+  // Serve the Swagger documents and Swagger UI
+  app.use(middleware.swaggerUi());
+});
+
 dotenv.load()
 
 var args = process.argv.slice(2);

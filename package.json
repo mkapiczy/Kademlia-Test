@@ -10,6 +10,9 @@
     "express": "^4.15.4",
     "http-status-codes": "^1.2.0",
     "request": "^2.81.0",
-    "sha1": "^1.1.1"
+    "sha1": "^1.1.1",
+    "swagger-ui": "latest",
+    "swagger-tools": "latest",
+    "yamljs": "latest"    
   }
 }
