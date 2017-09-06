@@ -1,12 +1,23 @@
-const express = require('express')  
-const request = require('request')
+const express = require('express') ; 
+const request = require('request');
 const app = express()  
 const dotenv = require('dotenv');
-var HttpStatus = require('http-status-codes');
+const HttpStatus = require('http-status-codes');
+const constants = require('./js/constants');
+
+const util = require('./lib/util');
+const KBucket = require('./lib/kbucket');
+const Rpc = require('./lib/rpc');
 
 dotenv.load()
-const port = process.env.PORT
 
+var args = process.argv.slice(2);
+
+const port = args[0];
+var nodeId;
+var buckets = [];
+
+init();
 
 //Html Index
 app.get('/', (request, response) => {  
@@ -21,12 +32,14 @@ app.get('/api/kademlia/ping', (request, response) => {
 
 
 //FIND_NODE ENDPOINT
-app.get('/api/kademlia/find_node', (request, response) => {    
+app.get('/api/kademlia/find_node/:id', (request, response) => {    
   response.status(HttpStatus.OK)
   response.setHeader('Content-Type', 'application/json')
+  console.log(request.params.id);
   //findClosestNodes
   closestNodes = {}
   response.json(JSON.stringify({closestNodes}))
+
 })
 
 //FIND_NODE ENDPOINT
@@ -46,6 +59,29 @@ function sendPingRequest(nodeId){
       console.log(response.body)
     }
   })
+}
+
+function init() {
+	if (port != 8000) {
+    nodeId = util.createRandomId(constants.B/8);
+    createBuckets(nodeId);
+    var bucketIndex = util.calculateIndex(nodeId, 0);
+    buckets[bucketIndex].update({id: 0, ip: 'http://localhost', port: 8000});
+
+		request('http://localhost:8000/api/kademlia/find_node/' + nodeId, function (error, reponse, body) {
+			console.log('Body: ' + body);
+		});
+	} else {
+    nodeId = 0;
+    createBuckets();
+  }
+}
+
+function createBuckets() {
+  var rpc = new Rpc(nodeId);
+  for(var i = 0; i < constants.B; i++) {
+    buckets.push(new KBucket(i, rpc));
+  }
 }
 
 app.listen(port, (err) => {  
