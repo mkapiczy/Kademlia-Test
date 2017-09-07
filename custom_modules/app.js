@@ -4,19 +4,20 @@ const Node = require("./node");
 const constants = require("./../config/constants")
 
 var buckets = [];
-node = {};
-baseNode = new Node(
+
+global.baseNode = new Node(
   constants.BASE_NODE_ID,
   constants.BASE_NODE_IP_ADDR,
   constants.BASE_NODE_PORT
 );
 
 exports.init = function(nodeIpAddr, nodePort) {
+  createBuckets();
+
   if (nodePort != constants.BASE_NODE_PORT) {
     nodeId = util.createRandomId(constants.B / 8);
-    node = new Node(nodeId, nodeIpAddr, nodePort);
-    createBuckets();
-
+    global.node = new Node(nodeId, nodeIpAddr, nodePort);
+   
     var bucketIndex = util.calculateBucketIndexForANode(
       nodeId,
       constants.BASE_NODE_ID
@@ -36,9 +37,8 @@ exports.init = function(nodeIpAddr, nodePort) {
     //   console.log("Body: " + body);
     // });
   } else {
-    nodeId = constants.BASE_NODE_ID; // What we should do with this id
-    node = new Node(nodeId, nodeIpAddr, nodePort);
-    createBuckets();
+    nodeId = constants.BASE_NODE_ID; 
+    global.node = new Node(nodeId, nodeIpAddr, nodePort);
   }
 };
 

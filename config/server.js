@@ -35,7 +35,7 @@ app.get("/api/kademlia/find_node/:id", (request, response) => {
 
 //Endpoint for testing ping operation
 app.get("/test_ping", (request, response) => {
-   communicator.sendPing(node, baseNode, function(result) {
+   communicator.sendPing(global.node, global.baseNode, function(result) {
     console.log(result);
     response.status(HttpStatus.OK);
     response.setHeader("Content-Type", "application/json");
