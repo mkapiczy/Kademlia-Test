@@ -14,8 +14,16 @@ exports.createRandomId = function(nrOfBytes) {
     .createHash("sha1")
     .update(randomNumber)
     .digest("hex");
-  var parsedInt = bigInt(sha.substr(0, 10), 16);
+  var parsedInt = parseInt(sha.substr(0,10), 16);
   return parsedInt % Math.pow(2, nrOfBytes * 8);
+};
+
+exports.createRandomAlphaNumericIdentifier = function(nrOfBytes) {
+  var randomNumber = crypto.randomBytes(nrOfBytes); // Is this the right way?
+  return crypto
+    .createHash("sha1")
+    .update(randomNumber)
+    .digest("hex");
 };
 
 // Return the ondex of a bucket in which a node should be placed
@@ -24,5 +32,5 @@ exports.calculateBucketIndexForANode = function(node1Id, node2Id) {
 };
 
 distanceBetweenTwoNodes = function(node1Id, node2Id) {
-  return node1.id ^ node2.id;
+  return node1Id ^ node2Id;
 };
