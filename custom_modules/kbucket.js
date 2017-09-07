@@ -1,7 +1,7 @@
 const constants = require("./../config/constants");
 const communicator = require("./communicator");
 
-const NodeState = require("./../enum/nodeStateEnum")
+const NodeState = require("./../enum/nodeStateEnum");
 
 function KBucket(index) {
   this.index = index;
@@ -9,13 +9,13 @@ function KBucket(index) {
 }
 
 KBucket.prototype.update = function(node) {
-  if (isNodeInTheBucket(node)) {
-    updateNode(node);
+  if (this.isNodeInTheBucket(node)) {
+    this.updateNode(node);
   } else {
-    if (isBucketFull()) {
-      updateStateOfTheOldestNodeInTheBucket();
+    if (this.isBucketFull()) {
+      this.updateStateOfTheOldestNodeInTheBucket();
       if (isBucketNotFull) {
-        addNode(node);
+        this.addNode(node);
       }
     } else {
       this.nodesList.push(node);
@@ -48,7 +48,6 @@ KBucket.prototype.updateNode = function(node) {
   this.addNode(node);
 };
 
-
 KBucket.prototype.isNodeInTheBucket = function(node) {
   if (this.getNodeIndex(node) != -1) {
     return true;
@@ -69,12 +68,16 @@ KBucket.prototype.getNodeIndex = function(node) {
 KBucket.prototype.updateStateOfTheOldestNodeInTheBucket = function() {
   oldestNodeInTheBucket = this.nodesList[0];
   communicator.sendPing(global.node, oldestNodeInTheBucket, result => {
-    if (result == NodeState.NOT_ALIVE) {
-      this.removeNode(oldestNodeInTheBucket);
-    } else if (result == "ALIVE") {
-      this.updateNode(oldestNodeInTheBucket);
-    }
-  });
+    this.updateNodeAccordingToItsState(oldestNodeInTheBucket, result)
+    });
+};
+
+KBucket.prototype.updateNodeAccordingToItsState = function(nodeToUpdate, nodeState) {
+  if (result == NodeState.NOT_ALIVE) {
+    this.removeNode(nodeToUpdate);
+  } else if (result == NodeState.ALIVE) {
+    this.updateNode(nodeToUpdate);
+  }
 };
 
 module.exports = KBucket;
