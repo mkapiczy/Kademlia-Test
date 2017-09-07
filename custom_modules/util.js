@@ -26,11 +26,4 @@ exports.createRandomAlphaNumericIdentifier = function(nrOfBytes) {
     .digest("hex");
 };
 
-// Return the ondex of a bucket in which a node should be placed
-exports.calculateBucketIndexForANode = function(node1Id, node2Id) {
-  return Math.floor(Math.log2(distanceBetweenTwoNodes(node1Id, node2Id)));
-};
 
-distanceBetweenTwoNodes = function(node1Id, node2Id) {
-  return node1Id ^ node2Id;
-};

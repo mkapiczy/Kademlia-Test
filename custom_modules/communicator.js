@@ -5,8 +5,8 @@ const util = require("./util");
 const NodeState = require("./../enum/nodeStateEnum")
 
 exports.sendPing = function(senderNode, nodeToPing, callBack) {
+  console.log("Buckets before sending ping: ", global.BucketManager.buckets);
   var rpcId = util.createRandomAlphaNumericIdentifier(20);
-  console.log("send ping");
 
   var requestOptions = {
     method: "GET",
@@ -26,7 +26,9 @@ exports.sendPing = function(senderNode, nodeToPing, callBack) {
       callBack(NodeState.NOT_ALIVE);
     } else {
       console.log(response.body);
+      global.BucketManager.updateNodeInBuckets(nodeToPing)
       callBack(NodeState.ALIVE);
     }
   });
+  console.log("Buckets after ping", global.BucketManager.buckets);
 };
