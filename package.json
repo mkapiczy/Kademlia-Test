@@ -6,13 +6,14 @@
   "author": "",
   "license": "MIT",
   "dependencies": {
+    "big-integer": "^1.6.25",
     "dotenv": "^4.0.0",
     "express": "^4.15.4",
     "http-status-codes": "^1.2.0",
     "request": "^2.81.0",
     "sha1": "^1.1.1",
-    "swagger-ui": "latest",
     "swagger-tools": "latest",
-    "yamljs": "latest"    
+    "swagger-ui": "latest",
+    "yamljs": "latest"
   }
 }
