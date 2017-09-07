@@ -3,8 +3,10 @@ const HttpStatus = require("http-status-codes");
 const bodyParser = require("body-parser");
 
 const communicator = require("./../custom_modules/communicator");
+const Node = require("./../custom_modules/node");
+const util = require("./../custom_modules/util");
 
-const app = express()
+const app = express();
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 
@@ -17,10 +19,23 @@ app.get("/", (request, response) => {
 
 //PING ENDPOINT
 app.get("/api/kademlia/ping", (request, response) => {
-  // verify update provide response
   console.log("Request body: ", request.body);
+  console.log("Buckets", global.BucketManager.buckets);
+  requestNode = new Node(
+    request.body.nodeId,
+    request.body.nodeIP,
+    request.body.nodePort
+  );
+
+  global.BucketManager.updateNodeInBuckets(requestNode)
+
   response.status(HttpStatus.OK);
-  response.send("PONG");
+  response.json({
+    nodeId: global.node.id,
+    rpcId: request.body.rpcId,
+    msg: "PONG"
+  });
+  console.log("Buckets", global.BucketManager.buckets);
 });
 
 //FIND_NODE ENDPOINT
@@ -35,7 +50,7 @@ app.get("/api/kademlia/find_node/:id", (request, response) => {
 
 //Endpoint for testing ping operation
 app.get("/test_ping", (request, response) => {
-   communicator.sendPing(global.node, global.baseNode, function(result) {
+  communicator.sendPing(global.node, global.baseNode, function(result) {
     console.log(result);
     response.status(HttpStatus.OK);
     response.setHeader("Content-Type", "application/json");
@@ -44,12 +59,11 @@ app.get("/test_ping", (request, response) => {
 });
 
 app.listen(port, err => {
-    if (err) {
-      return console.log("Error: ", err);
-    }
-  
-    console.log(`Server is listening on port ${port}`);
-  });
-  
+  if (err) {
+    return console.log("Error: ", err);
+  }
+
+  console.log(`Server is listening on port ${port}`);
+});
 
 module.exports = app;

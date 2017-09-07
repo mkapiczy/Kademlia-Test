@@ -1,9 +1,8 @@
 const util = require("./util");
 const KBucket = require("./kbucket");
 const Node = require("./node");
-const constants = require("./../config/constants")
-
-var buckets = [];
+const constants = require("./../config/constants");
+const BucketManager = require("./BucketManager");
 
 global.baseNode = new Node(
   constants.BASE_NODE_ID,
@@ -11,39 +10,16 @@ global.baseNode = new Node(
   constants.BASE_NODE_PORT
 );
 
-exports.init = function(nodeIpAddr, nodePort) {
-  createBuckets();
+global.BucketManager = new BucketManager;
 
+exports.init = function(nodeIpAddr, nodePort) {
   if (nodePort != constants.BASE_NODE_PORT) {
     nodeId = util.createRandomId(constants.B / 8);
     global.node = new Node(nodeId, nodeIpAddr, nodePort);
-   
-    var bucketIndex = util.calculateBucketIndexForANode(
-      nodeId,
-      constants.BASE_NODE_ID
-    );
-
-    // buckets[bucketIndex].update({
-    //   id: constants.BASE_NODE_ID,
-    //   ip: "http://localhost",
-    //   port: 8000
-    // });
-
-    // request("http://localhost:8000/api/kademlia/find_node/" + nodeId, function(
-    //   error,
-    //   reponse,
-    //   body
-    // ) {
-    //   console.log("Body: " + body);
-    // });
+    global.BucketManager.updateNodeInBuckets(global.baseNode)
+    // find node call?
   } else {
-    nodeId = constants.BASE_NODE_ID; 
+    nodeId = constants.BASE_NODE_ID;
     global.node = new Node(nodeId, nodeIpAddr, nodePort);
   }
 };
-
-function createBuckets() {
-  for (var i = 0; i < constants.B; i++) {
-    buckets.push(new KBucket(i));
-  }
-}
