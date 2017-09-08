@@ -6,7 +6,7 @@ const constants = require('./../config/constants');
 var bucketManager;
 
 //For running this test, ping was commented out from kbucket (always add node)
-function getNodesFromFullBuckettest() {
+function getNodesFromFullBucketTest() {
     bucketManager = new BucketManager();
     global.node = new Node(55, 'http://localhost', 8000);
 
@@ -31,4 +31,4 @@ function createDummyData() {
 
 }
 
-getNodesFromFullBuckettest();
+getNodesFromFullBucketTest();
