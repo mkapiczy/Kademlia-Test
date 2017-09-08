@@ -7,6 +7,7 @@ function BucketManager() {
 }
 
 BucketManager.prototype.updateNodeInBuckets = function(nodeToUpdate) {
+  if(global.node.id === nodeToUpdate.id) return;
   var bucketIndex = this.calculateBucketIndexForANode(nodeToUpdate.id);
   this.buckets[bucketIndex].update(nodeToUpdate);
 };
@@ -23,6 +24,58 @@ BucketManager.prototype.createBuckets = function() {
   for (var i = 0; i < constants.B; i++) {
     this.buckets.push(new KBucket(i));
   }
+};
+
+BucketManager.prototype.getClosestNodes = function(nodeId) {
+  var closestNodes = [];
+  var bucketIndex = this.calculateBucketIndexForANode(nodeId);
+  closestNodes.push(this.buckets[bucketIndex].nodesList);
+
+  if(closestNodes.length !== constants.k) {
+    var allBucketsChecked = false;
+    var bucketIndexInc = bucketIndex;
+    var bucketIndexDec = bucketIndex;
+
+    while(closestNodes.length < constants.k && !allBucketsChecked) {
+      var candidateNodes = [];
+      bucketIndexInc = (bucketIndexInc + 1) % (constants.B-1);
+      bucketIndexDec--;
+
+      if (bucketIndexDec < 0) {
+        bucketIndexDec = constants.B-1;
+      }
+
+      if(bucketIndexInc === bucketIndexDec) {
+        allBucketsChecked = true;
+      } else {
+        candidateNodes.push(this.buckets[bucketIndexInc].nodesList);
+      }
+
+      candidateNodes.push(this.buckets[bucketIndexDec].nodesList);
+
+      //TODO: this concat method does not behave as it should, doesn't merge the two arrays
+      closestNodes.concat(this.findClosestNodesFromList(candidateNodes, nodeId, constants.k - closestNodes.length));
+    }
+  }
+
+  return closestNodes;
+};
+
+BucketManager.prototype.findClosestNodesFromList = function (candidateNodes, nodeId, numberOfNodesNeeded) {
+  var closestNodes = [];
+
+  //TODO: sort array after which id is closest!
+  /*candidateNodes.sort(function(a, b){
+    //return Math.abs(nodeId-this.distanceBetweenTwoNodes(a, nodeId) - Math.abs(nodeId-this.distanceBetweenTwoNodes(b, nodeId)));
+  });*/
+  
+  if(numberOfNodesNeeded < candidateNodes.length) {
+    closestNodes = candidateNodes.slice(0,numberOfNodesNeeded);
+  } else {
+    closestNodes = candidateNodes;
+  }
+
+  return closestNodes;
 };
 
 module.exports = BucketManager;

@@ -14,7 +14,7 @@ KBucket.prototype.update = function(node) {
   } else {
     if (this.isBucketFull()) {
       this.updateStateOfTheOldestNodeInTheBucket();
-      if (isBucketNotFull) {
+      if (this.isBucketNotFull()) {
         this.addNode(node);
       }
     } else {
@@ -31,7 +31,7 @@ KBucket.prototype.isBucketFull = function() {
 };
 
 KBucket.prototype.isBucketNotFull = function() {
-  return !isBucketFull();
+  return !this.isBucketFull();
 };
 
 KBucket.prototype.addNode = function(node) {
@@ -69,13 +69,16 @@ KBucket.prototype.updateStateOfTheOldestNodeInTheBucket = function() {
   oldestNodeInTheBucket = this.nodesList[0];
   communicator.sendPing(global.node, oldestNodeInTheBucket, result => {
     this.updateNodeAccordingToItsState(oldestNodeInTheBucket, result)
-    });
+  });
+
+  //This was used for testing purposes and can eventually be deleted:
+  //this.updateNodeAccordingToItsState(oldestNodeInTheBucket, NodeState.ALIVE);
 };
 
 KBucket.prototype.updateNodeAccordingToItsState = function(nodeToUpdate, nodeState) {
-  if (result == NodeState.NOT_ALIVE) {
+  if (nodeState == NodeState.NOT_ALIVE) {
     this.removeNode(nodeToUpdate);
-  } else if (result == NodeState.ALIVE) {
+  } else if (nodeState == NodeState.ALIVE) {
     this.updateNode(nodeToUpdate);
   }
 };
