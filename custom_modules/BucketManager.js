@@ -1,5 +1,5 @@
-const constants = require("./../config/constants")
-const KBucket = require("./kbucket")
+const constants = require("./../config/constants");
+const KBucket = require("./kbucket");
 
 function BucketManager() {
   this.buckets = [];
@@ -7,13 +7,16 @@ function BucketManager() {
 }
 
 BucketManager.prototype.updateNodeInBuckets = function(nodeToUpdate) {
-  if(global.node.id === nodeToUpdate.id) return;
-  var bucketIndex = this.calculateBucketIndexForANode(nodeToUpdate.id);
-  this.buckets[bucketIndex].update(nodeToUpdate);
+  if (nodeToUpdate.isValid()) {
+    var bucketIndex = this.calculateBucketIndexForANode(nodeToUpdate.id);
+    this.buckets[bucketIndex].update(nodeToUpdate);
+  }
 };
 
 BucketManager.prototype.calculateBucketIndexForANode = function(nodeId) {
-  return Math.floor(Math.log2(this.distanceBetweenTwoNodes(nodeId, global.node.id)));
+  return Math.floor(
+    Math.log2(this.distanceBetweenTwoNodes(nodeId, global.node.id))
+  );
 };
 
 BucketManager.prototype.distanceBetweenTwoNodes = function(node1Id, node2Id) {
@@ -26,26 +29,27 @@ BucketManager.prototype.createBuckets = function() {
   }
 };
 
+// method returns the requesting node as well we need to filter that
 BucketManager.prototype.getClosestNodes = function(nodeId) {
   var closestNodes = [];
   var bucketIndex = this.calculateBucketIndexForANode(nodeId);
   closestNodes.push(this.buckets[bucketIndex].nodesList);
 
-  if(closestNodes.length !== constants.k) {
+  if (closestNodes.length !== constants.k) {
     var allBucketsChecked = false;
     var bucketIndexInc = bucketIndex;
     var bucketIndexDec = bucketIndex;
 
-    while(closestNodes.length < constants.k && !allBucketsChecked) {
+    while (closestNodes.length < constants.k && !allBucketsChecked) {
       var candidateNodes = [];
-      bucketIndexInc = (bucketIndexInc + 1) % (constants.B-1);
+      bucketIndexInc = (bucketIndexInc + 1) % (constants.B - 1);
       bucketIndexDec--;
 
       if (bucketIndexDec < 0) {
-        bucketIndexDec = constants.B-1;
+        bucketIndexDec = constants.B - 1;
       }
 
-      if(bucketIndexInc === bucketIndexDec) {
+      if (bucketIndexInc === bucketIndexDec) {
         allBucketsChecked = true;
       } else {
         candidateNodes.push(this.buckets[bucketIndexInc].nodesList);
@@ -54,23 +58,34 @@ BucketManager.prototype.getClosestNodes = function(nodeId) {
       candidateNodes.push(this.buckets[bucketIndexDec].nodesList);
 
       //TODO: this concat method does not behave as it should, doesn't merge the two arrays
-      closestNodes.concat(this.findClosestNodesFromList(candidateNodes, nodeId, constants.k - closestNodes.length));
+      closestNodes = closestNodes.concat(
+        this.findClosestNodesFromList(
+          candidateNodes,
+          nodeId,
+          constants.k - closestNodes.length
+        )
+      );
     }
   }
 
   return closestNodes;
 };
 
-BucketManager.prototype.findClosestNodesFromList = function (candidateNodes, nodeId, numberOfNodesNeeded) {
+BucketManager.prototype.findClosestNodesFromList = function(
+  candidateNodes,
+  nodeId,
+  numberOfNodesNeeded
+) {
   var closestNodes = [];
 
   //TODO: sort array after which id is closest!
   /*candidateNodes.sort(function(a, b){
     //return Math.abs(nodeId-this.distanceBetweenTwoNodes(a, nodeId) - Math.abs(nodeId-this.distanceBetweenTwoNodes(b, nodeId)));
   });*/
-  
-  if(numberOfNodesNeeded < candidateNodes.length) {
-    closestNodes = candidateNodes.slice(0,numberOfNodesNeeded);
+  candidateNodes.sort();
+
+  if (numberOfNodesNeeded < candidateNodes.length) {
+    closestNodes = candidateNodes.slice(0, numberOfNodesNeeded);
   } else {
     closestNodes = candidateNodes;
   }
