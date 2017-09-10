@@ -16,6 +16,8 @@
     "sha1": "^1.1.1",
     "swagger-tools": "latest",
     "swagger-ui": "latest",
-    "yamljs": "latest"
+    "yamljs": "latest",
+    "pug": "latest",
+    "path": "latest"
   }
 }

@@ -1,0 +1,15 @@
+html  
+  head
+    title= title
+  body
+    h1= message
+
+  <!-- For later use -->
+  div
+		h3= node.nodeID
+		p Port: #{node.port}
+		p Buckets:
+			each bucket in node.buckets
+				p= bucket.id
+					each contact in bucket.contacts
+						li id: #{contact.nodeID}, port: #{contact.port}

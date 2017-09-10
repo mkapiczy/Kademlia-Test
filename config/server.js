@@ -1,6 +1,8 @@
 const express = require("express");
 const HttpStatus = require("http-status-codes");
 const bodyParser = require("body-parser");
+const pug = require("pug");
+const path = require("path");
 
 const communicator = require("./../custom_modules/communicator");
 const Node = require("./../custom_modules/node");
@@ -9,6 +11,8 @@ const util = require("./../custom_modules/util");
 const app = express();
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
+app.set('view engine', 'pug');
+app.set('views', path.join(__dirname, './../views/'));
 
 var args = process.argv.slice(2);
 const port = args[0];
@@ -17,7 +21,7 @@ app.get("/", (request, response) => {
   response.send("Hello from Express!");
 });
 
-//PING ENDPOINT
+//PING ENDPOINT - has to be renamed to /api/kademlia/nodes/ping??
 app.get("/api/kademlia/ping", (request, response) => {
   console.log("Request body: ", request.body);
   console.log("Buckets", global.BucketManager.buckets);
@@ -38,14 +42,15 @@ app.get("/api/kademlia/ping", (request, response) => {
   console.log("Buckets", global.BucketManager.buckets);
 });
 
-//FIND_NODE ENDPOINT
+//FIND_NODE ENDPOINT - has to be renamed to /api/kademlia/nodes/:id
 app.get("/api/kademlia/find_node/:id", (request, response) => {
   response.status(HttpStatus.OK);
   response.setHeader("Content-Type", "application/json");
   console.log(request.params.id);
   //findClosestNodes
   closestNodes = {};
-  response.json(JSON.stringify({ closestNodes }));
+  //response.json(JSON.stringify({ closestNodes }));
+  response.render('index', {title: 'Hey!', message: 'This works :-)'});
 });
 
 //Endpoint for testing ping operation
