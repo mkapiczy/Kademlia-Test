@@ -1,6 +1,7 @@
 const BucketManager = require('./../custom_modules/BucketManager');
 const Node = require('./../custom_modules/node');
 const constants = require('./../config/constants');
+const util = require('./../custom_modules/util');
 
 
 var bucketManager;
@@ -8,10 +9,10 @@ var bucketManager;
 //For running this test, ping was commented out from kbucket (always add node)
 function getNodesFromFullBucketTest() {
     bucketManager = new BucketManager();
-    global.node = new Node(55, 'http://localhost', 8000);
+    global.node = new Node(32, 'http://localhost', 8000);
 
     for(var i = 0; i < 200; i++) {
-        bucketManager.updateNodeInBuckets(new Node(i+1, 'http://localhost', 8000+i+1));
+        bucketManager.updateNodeInBuckets(new Node(util.createRandomId(1), 'http://localhost', 8000+i+1));
     }
 
 
@@ -24,7 +25,14 @@ function getNodesFromFullBucketTest() {
    console.log(bucketManager.buckets[6]);
    console.log(bucketManager.buckets[7]);
 
-   console.log(bucketManager.getClosestNodes(5));
+   var nodesList = bucketManager.getClosestNodes(30);
+   console.log(nodesList);
+
+   nodesList.forEach((node) => {
+       //console.log(bucketManager.distanceBetweenTwoNodes(30, node.id))
+   })
+
+
 }
 
 function createDummyData() {

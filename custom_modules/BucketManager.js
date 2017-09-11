@@ -36,7 +36,9 @@ BucketManager.prototype.getClosestNodes = function(nodeId) {
   var bucketIndex = this.calculateBucketIndexForANode(nodeId);
   
   this.buckets[bucketIndex].nodesList.forEach((node) => {
-    closestNodes.push(node);
+    if(node.id !== nodeId) {
+      closestNodes.push(node);
+    }
   });
 
   if (closestNodes.length !== constants.k) {
@@ -49,7 +51,6 @@ BucketManager.prototype.getClosestNodes = function(nodeId) {
       bucketIndexInc = (bucketIndexInc + 1) % (constants.B - 1);
       bucketIndexDec--;
 
-      
       if (bucketIndexDec < 0) {
         bucketIndexDec = constants.B - 1;
       }
@@ -81,28 +82,23 @@ BucketManager.prototype.getClosestNodes = function(nodeId) {
   return closestNodes;
 };
 
-BucketManager.prototype.findClosestNodesFromList = function(
+BucketManager.prototype.findClosestNodesFromList = function (
   candidateNodes,
   nodeId,
   numberOfNodesNeeded
 ) {
   var closestNodes = [];
 
-  console.log("Number of nodes needed " + numberOfNodesNeeded);
-
-  //TODO: sort array after which id is closest!
-  //candidateNodes.sort(function(a, b){
-  //  return Math.abs(nodeId - BucketManager.prototype.distanceBetweenTwoNodes(a, nodeId) - Math.abs(nodeId - BucketManager.prototype.distanceBetweenTwoNodes(b, nodeId)));
-  //});
-
-  //console.log("Before: " + candidateNodes);
-  //printList(candidateNodes)
-  //sortList(nodeId, candidateNodes);
-  //console.log("after: " + candidateNodes);
-  //printList(candidateNodes)
+  console.log("BEFORE");
+  printList(candidateNodes);
+  sortList(nodeId, candidateNodes);
+  console.log("AFTER");
+  printList(candidateNodes);
+  console.log("DONE");
 
   
   candidateNodes.forEach((node) => {
+    console.log(this.distanceBetweenTwoNodes(nodeId, node.id)); //Should this be ascending?
     closestNodes.push(node);
   });
   
@@ -122,8 +118,8 @@ function printList (list) {
 }
 
 function sortList(id, list) {
-	list.sort(function(a, b){
-    return Math.abs(id - BucketManager.prototype.distanceBetweenTwoNodes(a, id) - Math.abs(id - BucketManager.prototype.distanceBetweenTwoNodes(b, id)));
+  list.sort(function(a, b){
+    return BucketManager.prototype.distanceBetweenTwoNodes(a, id) - BucketManager.prototype.distanceBetweenTwoNodes(b, id);
   });
 }
 
