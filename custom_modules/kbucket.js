@@ -71,7 +71,7 @@ KBucket.prototype.updateStateOfTheOldestNodeInTheBucket = function() {
     this.updateNodeAccordingToItsState(oldestNodeInTheBucket, result)
   });
 
-  //This was used for testing purposes and can eventually be deleted:
+  //This was used for testing and can eventually be deleted:
   //this.updateNodeAccordingToItsState(oldestNodeInTheBucket, NodeState.ALIVE);
 };
 

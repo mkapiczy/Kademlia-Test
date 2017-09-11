@@ -24,7 +24,7 @@ function getNodesFromFullBucketTest() {
    console.log(bucketManager.buckets[6]);
    console.log(bucketManager.buckets[7]);
 
-   console.log(bucketManager.getClosestNodes(52));
+   console.log(bucketManager.getClosestNodes(5));
 }
 
 function createDummyData() {
