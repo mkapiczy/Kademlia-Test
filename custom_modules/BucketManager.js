@@ -79,18 +79,27 @@ BucketManager.prototype.findClosestNodesFromList = function(
   var closestNodes = [];
 
   //TODO: sort array after which id is closest!
-  /*candidateNodes.sort(function(a, b){
-    //return Math.abs(nodeId-this.distanceBetweenTwoNodes(a, nodeId) - Math.abs(nodeId-this.distanceBetweenTwoNodes(b, nodeId)));
-  });*/
-  candidateNodes.sort();
+  //candidateNodes.sort(function(a, b){
+  //  return Math.abs(nodeId - BucketManager.prototype.distanceBetweenTwoNodes(a, nodeId) - Math.abs(nodeId - BucketManager.prototype.distanceBetweenTwoNodes(b, nodeId)));
+  //});
 
+  console.log("Before: " + candidateNodes);
+  sortList(nodeId, candidateNodes);
+  console.log("after: " + candidateNodes);
+  
   if (numberOfNodesNeeded < candidateNodes.length) {
     closestNodes = candidateNodes.slice(0, numberOfNodesNeeded);
   } else {
     closestNodes = candidateNodes;
   }
-
+  console.log("length: " + closestNodes.length);
   return closestNodes;
 };
+
+function sortList(id, list) {
+	list.sort(function(a, b){
+    return Math.abs(id - BucketManager.prototype.distanceBetweenTwoNodes(a, id) - Math.abs(id - BucketManager.prototype.distanceBetweenTwoNodes(b, id)));
+  });
+}
 
 module.exports = BucketManager;
