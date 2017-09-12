@@ -11,6 +11,9 @@ const Node = require("./../custom_modules/node");
 const util = require("./../custom_modules/util");
 
 const app = express();
+
+const apiPath = "/api/kademlia/";
+
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 app.set("view engine", "pug");
@@ -19,7 +22,7 @@ app.set("views", path.join(__dirname, "./../views/"));
 var args = process.argv.slice(2);
 const port = args[0];
 
-app.get("/kademlia/node", (request, response) => {
+app.get(apiPath + "node", (request, response) => {
   
     if (request.accepts('html')) {
       response.render('index', {title: 'Hey!', message: 'This works :-)', node: global.node, buckets: global.BucketManager.buckets})
@@ -34,7 +37,7 @@ app.get("/kademlia/node", (request, response) => {
 });
 
 //PING ENDPOINT - has to be renamed to /api/kademlia/nodes/ping??
-app.get("/api/kademlia/ping", (request, response) => {
+app.get(apiPath + "ping", (request, response) => {
   console.log("Ping message from node ", request.body.nodeId);
   console.log("Buckets", global.BucketManager.buckets);
   requestNode = new Node(
@@ -55,7 +58,7 @@ app.get("/api/kademlia/ping", (request, response) => {
 });
 
 //FIND_NODE ENDPOINT
-app.get("/api/kademlia/find_node", (request, response) => {
+app.get(apiPath + "find_node", (request, response) => {
   console.log("Find node message from node ", request.body.nodeId);
   console.log("Buckets", global.BucketManager.buckets);
   requestNode = new Node(
@@ -98,8 +101,6 @@ var swaggerDoc = YAML.load("openapi.yaml");
 swaggerTools.initializeMiddleware(swaggerDoc, function(middleware) {
   app.use(middleware.swaggerUi());
 });
-
-
 
 app.listen(port, err => {
   if (err) {
