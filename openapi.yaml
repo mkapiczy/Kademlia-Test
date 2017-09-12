@@ -56,7 +56,7 @@ definitions:
         type: "string"
         description: "Random generated Id"
       KBuckets:
-        type: "Array"
+        type: "object"
         description: "An array of the neighbours sorted by distance."
   ping:
     properties:
