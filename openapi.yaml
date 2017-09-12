@@ -31,14 +31,38 @@ paths:
         required: true
         schema:
           $ref: "#/definitions/node"
+  "/nodes/ping":
+    get:
+      description: "Ping node"
+      operationId: "N/A"
+      produces:
+      - "application/json"
+      responses:
+        200:
+          description: "OK"
+          schema:
+            $ref: "#/definitions/ping"
+      parameters:
+      - description: "Ping the given IP"
+        in: body
+        name: message
+        required: true
+        schema:
+          $ref: "#/definitions/ping"
 definitions:
   node:
     properties:
       nodeId:
         type: "string"
         description: "Random generated Id"
-      nodeId:
+      KBuckets:
+        type: "Array"
+        description: "An array of the neighbours sorted by distance."
+  ping:
+    properties:
+      response:
         type: "string"
+        description: "Succesful or failed ping?"
 # This section requires all requests to any path to require an API key.
 security:
 - api_key: []
