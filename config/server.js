@@ -3,6 +3,8 @@ const HttpStatus = require("http-status-codes");
 const bodyParser = require("body-parser");
 const pug = require("pug");
 const path = require("path");
+var swaggerTools = require("swagger-tools");
+var YAML = require("yamljs");
 
 const communicator = require("./../custom_modules/communicator");
 const Node = require("./../custom_modules/node");
@@ -91,6 +93,13 @@ app.get("/test/find_node", (request, response) => {
     response.json(JSON.stringify(result));
   });
 });
+
+var swaggerDoc = YAML.load("openapi.yaml");
+swaggerTools.initializeMiddleware(swaggerDoc, function(middleware) {
+  app.use(middleware.swaggerUi());
+});
+
+
 
 app.listen(port, err => {
   if (err) {
