@@ -29,7 +29,7 @@ function getNodesFromFullBucketTest() {
    console.log(nodesList);
 
    nodesList.forEach((node) => {
-       //console.log(bucketManager.distanceBetweenTwoNodes(30, node.id))
+       console.log(bucketManager.distanceBetweenTwoNodes(30, node.id))
    })
 
 
