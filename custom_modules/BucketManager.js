@@ -42,9 +42,7 @@ BucketManager.prototype.getClosestNodes = function(nodeId) {
   var bucketIndexInc = bucketIndex;
   var bucketIndexDec = bucketIndex;
 
-  while (nodesNeighbours.length < constants.k && (bucketIndexDec > 0 || bucketIndexInc < (constants.B-1))) {
-    console.log("Dec: ", bucketIndexDec)
-    console.log("Inc: ", bucketIndexInc)
+  while (nodesNeighbours.length < constants.k && thereAreStillBucketsToCheck(bucketIndexInc, bucketIndexDec)) {
     if (bucketIndexDec > 0) {
       bucketIndexDec--;
       nodesNeighbours = nodesNeighbours.concat(this.buckets[bucketIndexDec].nodesList);
@@ -55,8 +53,7 @@ BucketManager.prototype.getClosestNodes = function(nodeId) {
       nodesNeighbours = nodesNeighbours.concat(this.buckets[bucketIndexInc].nodesList);
     }
   }
-  var closestNodes = this.getkClosestNodesFromNeighboursList(nodesNeighbours, nodeId);
-  return closestNodes;
+  return this.getkClosestNodesFromNeighboursList(nodesNeighbours, nodeId);
 };
 
 BucketManager.prototype.getNodesNeighboursFromTheSameBucket = function(nodeId) {
@@ -71,6 +68,13 @@ BucketManager.prototype.getNodesNeighboursFromTheSameBucket = function(nodeId) {
 
   return nodesFromTheNodeBucket;
 };
+
+thereAreStillBucketsToCheck = function (bucketIndexInc, bucketIndexDec){
+  if(bucketIndexDec > 0 || bucketIndexInc < constants.B-1){
+    return true;
+  }
+  return false;
+}
 
 BucketManager.prototype.getkClosestNodesFromNeighboursList = function(nodesNeighbours, nodeId) {
   nodesNeighbours = this.sortNodesListByDistanceAscending(nodeId, nodesNeighbours);
