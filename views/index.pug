@@ -7,10 +7,15 @@ html
 		script(src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js", integrity="sha384-0mSbJDEHialfmuBBQP6A4Qrprq5OVfW37PRR3j5ELqxss1yVqOtnepnHVP9aJ7xS", crossorigin="anonymous")
 	body
 		.container
-			center
-				h1 Node's information page
-			h3 Node id: #{node.id}
-			p Node port: #{node.port}
+			div
+				.panel("default", "Test")
+			h1 Node information:
+			h4 
+				b Node id: 
+				| #{node.id}
+			h4
+				b Node port: 
+				| #{node.port}
 			hr
 			div
 				b Buckets
@@ -22,5 +27,9 @@ html
 									li id: #{node.id}, port: #{node.port} 
 										a(href=node.ipAddr +':' + node.port +"/kademlia/node")
 											button.btn.btn-default(type="button") Go to the node side
+			.panel.panel-default
+				.panel-heading Panel Heading
+				.panel-body We are a fairly small, flexible design studio that designs for print and web. We work flexibly with clients to fulfil their design needs. Whether you need to create a brand from scratch, including marketing materials and a beautiful and functional website or whether you are looking for a design refresh we are confident you will be pleased with the results.
+
 												
 						hr
