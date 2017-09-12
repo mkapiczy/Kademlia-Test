@@ -8,31 +8,34 @@ html
 	body
 		.container
 			div
-				.panel("default", "Test")
-			h1 Node information:
-			h4 
-				b Node id: 
-				| #{node.id}
-			h4
-				b Node port: 
-				| #{node.port}
-			h4
-				b IP: 
-				| #{node.ipAddr}
-			hr
-			div
-				b Buckets
-				p
-					each bucket in buckets
-						p Bucket id: #{bucket.index}
-							p Nodes in a bucket:
-								each node in bucket.nodesList
-									li id: #{node.id}, port: #{node.port} 
-										a(href=node.ipAddr +':' + node.port +"/kademlia/node")
-											button.btn.btn-default(type="button") Go to the node side
-			.panel.panel-default
-				.panel-heading Panel Heading
-				.panel-body We are a fairly small, flexible design studio that designs for print and web. We work flexibly with clients to fulfil their design needs. Whether you need to create a brand from scratch, including marketing materials and a beautiful and functional website or whether you are looking for a design refresh we are confident you will be pleased with the results.
-
-												
+			p
+				.panel.panel-primary
+					.panel-heading 
+						h3 KademliaGolf - Node information:
+					.panel-body 
+						h4 
+							b Node id: 
+							| #{node.id}
+						h4
+							b Node port: 
+							| #{node.port}
+						h4
+							b IP: 
+							| #{node.ipAddr}
 						hr
+						div
+							b Buckets
+							p
+								each bucket in buckets
+									div.col-md-3
+										.panel.panel-success
+											.panel-heading Bucket id: #{bucket.index}
+											.panel-body 
+												p Nodes in this bucket:
+													each node in bucket.nodesList
+														div
+															a(href=node.ipAddr +':' + node.port +"/kademlia/node")
+																button.btn.btn-block.btn-primary 
+																	span.glyphicon.glyphicon-hdd
+																	|  Id: #{node.id} - Port: #{node.port}
+														p
