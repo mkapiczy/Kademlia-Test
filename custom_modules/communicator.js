@@ -3,9 +3,9 @@ const HttpStatus = require("http-status-codes");
 const util = require("./util");
 
 const NodeState = require("./../enum/nodeStateEnum");
+const Node = require("./node")
 
 exports.sendPing = function(senderNode, nodeToPing, callBack) {
-  console.log("Buckets before sending ping: ", global.BucketManager.buckets);
   var requestRpcId = util.createRandomAlphaNumericIdentifier(20);
 
   var requestOptions = {
@@ -33,7 +33,6 @@ exports.sendPing = function(senderNode, nodeToPing, callBack) {
       }
     }
   });
-  console.log("Buckets after ping", global.BucketManager.buckets);
 };
 
 exports.sendFindNode = function(senderNode, recipientNode, callBack) {
@@ -50,7 +49,7 @@ exports.sendFindNode = function(senderNode, recipientNode, callBack) {
     body: {
       nodeId: senderNode.id,
       nodeIP: senderNode.ipAddr,
-      port: senderNode.port,
+      nodePort: senderNode.port,
       rpcId: requestRpcId
     },
     json: true
@@ -67,12 +66,13 @@ exports.sendFindNode = function(senderNode, recipientNode, callBack) {
         closestNodes = response.body.closestNodes;
 
         closestNodes.forEach(function(node) {
-          global.BucketManager.updateNodeInBuckets(node);
-        }, this);
-
+          nodeToUpdate = new Node(node.id, node.ipAddr, node.port)
+          global.BucketManager.updateNodeInBuckets(nodeToUpdate);
+        }, this); 
+        console.log("Buckets after find node", global.BucketManager.buckets);
         callBack(NodeState.ALIVE);
       }
     }
   });
-  console.log("Buckets after find node", global.BucketManager.buckets);
+ 
 };

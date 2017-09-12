@@ -6,8 +6,13 @@ function BucketManager() {
   this.createBuckets();
 }
 
-BucketManager.prototype.updateNodeInBuckets = function(nodeToUpdate) {
+BucketManager.prototype.printBuckets = function(){
+  this.buckets.forEach(bucket =>{
+    console.log(bucket);
+  })
+}
 
+BucketManager.prototype.updateNodeInBuckets = function(nodeToUpdate) {
   if (nodeToUpdate.isValid() && nodeToUpdate.id !== global.node.id) {
     var bucketIndex = this.calculateBucketIndexForANode(nodeToUpdate.id);
     this.buckets[bucketIndex].update(nodeToUpdate);
@@ -30,97 +35,53 @@ BucketManager.prototype.createBuckets = function() {
   }
 };
 
-// method returns the requesting node as well we need to filter that
 BucketManager.prototype.getClosestNodes = function(nodeId) {
-  var closestNodes = [];
+  var nodesNeighbours = this.getNodesNeighboursFromTheSameBucket(nodeId);
+
   var bucketIndex = this.calculateBucketIndexForANode(nodeId);
-  
-  this.buckets[bucketIndex].nodesList.forEach((node) => {
-    if(node.id !== nodeId) {
-      closestNodes.push(node);
-    }
-  });
+  var bucketIndexInc = bucketIndex;
+  var bucketIndexDec = bucketIndex;
 
-  if (closestNodes.length !== constants.k) {
-    var allBucketsChecked = false;
-    var bucketIndexInc = bucketIndex;
-    var bucketIndexDec = bucketIndex;
-
-    while (closestNodes.length < constants.k && !allBucketsChecked) {
-      var candidateNodes = [];
-      bucketIndexInc = (bucketIndexInc + 1) % (constants.B - 1);
+  while (nodesNeighbours.length < constants.k && (bucketIndexDec > 0 || bucketIndexInc < (constants.B-1))) {
+    console.log("Dec: ", bucketIndexDec)
+    console.log("Inc: ", bucketIndexInc)
+    if (bucketIndexDec > 0) {
       bucketIndexDec--;
+      nodesNeighbours = nodesNeighbours.concat(this.buckets[bucketIndexDec].nodesList);
+    }
 
-      if (bucketIndexDec < 0) {
-        bucketIndexDec = constants.B - 1;
-      }
-
-      if (bucketIndexInc === bucketIndexDec) {
-        allBucketsChecked = true;
-      } else {
-        this.buckets[bucketIndexInc].nodesList.forEach((node) => {
-          candidateNodes.push(node);
-        });
-      }
-
-      this.buckets[bucketIndexDec].nodesList.forEach((node) => {
-        candidateNodes.push(node);
-      });
-
-      var sortList = this.findClosestNodesFromList(
-        candidateNodes,
-        nodeId,
-        constants.k - closestNodes.length
-      );
-
-      sortList.forEach((node) => {
-        closestNodes.push(node);
-      });
+    if (bucketIndexInc < constants.B - 1) {
+      bucketIndexInc++;
+      nodesNeighbours = nodesNeighbours.concat(this.buckets[bucketIndexInc].nodesList);
     }
   }
-
+  var closestNodes = this.getkClosestNodesFromNeighboursList(nodesNeighbours, nodeId);
   return closestNodes;
 };
 
-BucketManager.prototype.findClosestNodesFromList = function (
-  candidateNodes,
-  nodeId,
-  numberOfNodesNeeded
-) {
-  var closestNodes = [];
+BucketManager.prototype.getNodesNeighboursFromTheSameBucket = function(nodeId) {
+  nodesFromTheNodeBucket = [];
+  var bucketIndex = this.calculateBucketIndexForANode(nodeId);
 
-  console.log("BEFORE");
-  printList(candidateNodes);
-  sortList(nodeId, candidateNodes);
-  console.log("AFTER");
-  printList(candidateNodes);
-  console.log("DONE");
-
-  
-  candidateNodes.forEach((node) => {
-    console.log(this.distanceBetweenTwoNodes(nodeId, node.id)); //Should this be ascending?
-    closestNodes.push(node);
+  this.buckets[bucketIndex].nodesList.forEach(node => {
+    if (node.id !== nodeId) {
+      nodesFromTheNodeBucket.push(node);
+    }
   });
-  
-  if (numberOfNodesNeeded < candidateNodes.length) {
-    closestNodes = candidateNodes.slice(0, numberOfNodesNeeded);
-  } else {
-    closestNodes = candidateNodes;
-  }
 
-  return closestNodes;
+  return nodesFromTheNodeBucket;
 };
 
-function printList (list) {
-  for (var i = 0; i < list.length; i++) {
-    console.log(list[i])
-  }
-}
+BucketManager.prototype.getkClosestNodesFromNeighboursList = function(nodesNeighbours, nodeId) {
+  nodesNeighbours = this.sortNodesListByDistanceAscending(nodeId, nodesNeighbours);
+  return nodesNeighbours.slice(0, constants.k);
+};
 
-function sortList(id, list) {
-  list.sort(function(a, b){
-    return BucketManager.prototype.distanceBetweenTwoNodes(a, id) - BucketManager.prototype.distanceBetweenTwoNodes(b, id);
+BucketManager.prototype.sortNodesListByDistanceAscending=function(id, list) {
+  list.sort(function(a, b) {
+    return BucketManager.prototype.distanceBetweenTwoNodes(a.id, id) - BucketManager.prototype.distanceBetweenTwoNodes(b.id, id);
   });
+  return list;
 }
 
 module.exports = BucketManager;
