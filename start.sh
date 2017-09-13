@@ -1,4 +1,6 @@
-for i in {1..5}
+for i in {8000..8100}
 do
-    node index.js 800 + i
+    node index.js $i &
 done
+
+
