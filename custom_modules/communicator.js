@@ -10,7 +10,7 @@ exports.sendPing = function(senderNode, nodeToPing, callBack) {
 
   var requestOptions = {
     method: "GET",
-    uri: nodeToPing.ipAddr + ":" + nodeToPing.port + "/api/kademlia/ping",
+    uri: nodeToPing.ipAddr + ":" + nodeToPing.port + "/api/kademlia/info/ping",
     body: {
       nodeId: senderNode.id,
       nodeIP: senderNode.ipAddr,
