@@ -58,7 +58,7 @@ app.get(apiPath + "ping", (request, response) => {
 });
 
 //FIND NODE ENDPOINT
-app.get(apiPath + "node/:id", (request, response) => {
+app.get(apiPath + "nodes/:id", (request, response) => {
   console.log("Find node message from node ", request.body.nodeId);
   console.log("Buckets", global.BucketManager.buckets);
   requestNode = new Node(

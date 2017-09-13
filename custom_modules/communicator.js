@@ -47,7 +47,7 @@ exports.sendFindNode = function(senderNode, recipientNode, callBack) {
       recipientNode.ipAddr +
       ":" +
       recipientNode.port +
-      "/api/kademlia/node/" + senderNode.id,
+      "/api/kademlia/nodes/" + senderNode.id,
     body: {
       nodeIP: senderNode.ipAddr,
       nodePort: senderNode.port,
