@@ -34,7 +34,7 @@ html
 												p Nodes in this bucket:
 													each node in bucket.nodesList
 														div
-															a(href=node.ipAddr +':' + node.port +"/kademlia/node")
+															a(href=node.ipAddr +':' + node.port +"/api/kademlia/node")
 																button.btn.btn-block.btn-primary 
 																	span.glyphicon.glyphicon-hdd
 																	|  Id: #{node.id} - Port: #{node.port}

@@ -28,7 +28,9 @@ exports.sendPing = function(senderNode, nodeToPing, callBack) {
       console.log(response.body);
       responseRpcId = response.body.rpcId;
       if (responseRpcId == requestRpcId) {
-        global.BucketManager.updateNodeInBuckets(nodeToPing);
+        console.log("Now I ping: " + nodeToPing.port);
+        var nodeToUpdate = new Node(nodeToPing.id, nodeToPing.ipAddr, nodeToPing.port);
+        global.BucketManager.updateNodeInBuckets(nodeToUpdate);
         callBack(NodeState.ALIVE);
       }
     }
@@ -64,10 +66,13 @@ exports.sendFindNode = function(senderNode, recipientNode, callBack) {
       if (response.body.rpcId == requestRpcId) {
         global.BucketManager.updateNodeInBuckets(recipientNode);
         closestNodes = response.body.closestNodes;
-
         closestNodes.forEach(function(node) {
-          nodeToUpdate = new Node(node.id, node.ipAddr, node.port)
-          global.BucketManager.updateNodeInBuckets(nodeToUpdate);
+          if(node.id !== global.node.id) {
+            exports.sendPing(global.node, node, function (result) {
+              //Adding is handled in ping function
+            });
+          }
+        
         }, this); 
         console.log("Buckets after find node", global.BucketManager.buckets);
         callBack(NodeState.ALIVE);

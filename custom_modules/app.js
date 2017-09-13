@@ -22,6 +22,9 @@ exports.init = function(nodeIpAddr, nodePort) {
 
     communicator.sendPing(global.node, global.baseNode, function(result) {
       console.log(result);
+      communicator.sendFindNode(global.node, global.baseNode, function(result) {
+        console.log("Find_node done");
+      });
     });
   } else {
     nodeId = constants.BASE_NODE_ID;
