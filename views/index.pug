@@ -34,7 +34,7 @@ html
 												p Nodes in this bucket:
 													each node2 in bucket.nodesList
 														div
-															a(href='http://' + node.ipAddr +':' + node.port + "/")
+															a(href=node.ipAddr +':' + node.port + "/")
 																button.btn.btn-block.btn-primary 
 																	span.glyphicon.glyphicon-hdd
 																	|  Id: #{node.id} - Port: #{node.port}
