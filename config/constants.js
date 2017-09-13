@@ -10,7 +10,7 @@ const tRefresh =3600 //time after which an otherwise unaccessed bucket must be r
 const tReplicate = 3600 //the interval between Kademlia replication events, when a node is required to publish its entire database
 const tRepublish = 86400 // the time after which the original publisher must republish a key/value pair
 const BASE_NODE_ID = 0
-const BASE_NODE_IP_ADDR = "http://192.168.1.69"
+const BASE_NODE_IP_ADDR = "http://localhost"
 const BASE_NODE_PORT = "8000"
 
 module.exports = {
