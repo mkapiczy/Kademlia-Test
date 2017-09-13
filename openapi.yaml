@@ -11,11 +11,11 @@ consumes:
 produces:
 - "application/json"
 schemes:
-- "https"
+- "http"
 paths:
-  "/nodes/:id":
+  "/nodes/{:id}":
     get:
-      description: "Find the k closest neighbours"
+      description: "Find the k closest neighbours to node with id"
       operationId: "nodeId"
       produces:
       - "application/json"
@@ -25,15 +25,18 @@ paths:
           schema:
             $ref: "#/definitions/node"
       parameters:
-      - description: "Id for the given node"
-        in: body
-        name: message
-        required: true
-        schema:
-          $ref: "#/definitions/node"
-  "/nodes/ping":
+        - in: path
+          name: :id
+          required: true
+          type: number
+        - in: body
+          name: Body
+          required: true
+          schema:
+            $ref: "#/definitions/bodyNode"
+  "/info/ping":
     get:
-      description: "Ping node"
+      description: "Ping the node from the URL"
       operationId: "N/A"
       produces:
       - "application/json"
@@ -41,7 +44,7 @@ paths:
         200:
           description: "OK"
           schema:
-            $ref: "#/definitions/ping"
+            $ref: "#/definitions/pingResponse"
       parameters:
       - description: "Ping the given IP"
         in: body
@@ -54,47 +57,56 @@ definitions:
     properties:
       nodeId:
         type: "string"
-        description: "Random generated Id"
-      KBuckets:
+        description: "Id of the receiving node"
+      rpcId:
+        type: "string"
+        description: "Id of the request used for validation"
+      closestNodes:
         type: "object"
-        description: "An array of the neighbours sorted by distance."
+        description: "An array of the closest sorted by distance."
+        properties:
+          id:
+            type: "string"
+            description: "Id for the given node"
+          ipAddr:
+            type: "string"
+            description: "IP Address for the given node."
+          port:
+            type: "string"
+            description: "Port for the given node."
+  pingResponse:
+    properties:
+      nodeId:
+        type: "string"
+        description: "Id for the ping'ed node"
+      rpcId:
+        type: "string"
+        description: "Request Id used for validation"
+      msg:
+        type: "string"
+        description: "Return PONG, if Ping successful"
   ping:
     properties:
-      response:
+      nodeId:
         type: "string"
-        description: "Succesful or failed ping?"
-# This section requires all requests to any path to require an API key.
-security:
-- api_key: []
-securityDefinitions:
-  # This section configures basic authentication with an API key.
-  api_key:
-    type: "apiKey"
-    name: "key"
-    in: "query"
-  # This section configures authentication using Google API Service Accounts
-  # to sign a json web token. This is mostly used for server-to-server
-  # communication.
-  google_jwt:
-    authorizationUrl: ""
-    flow: "implicit"
-    type: "oauth2"
-    # This must match the 'iss' field in the JWT.
-    x-google-issuer: "jwt-client.endpoints.sample.google.com"
-    # Update this with your service account's email address.
-    x-google-jwks_uri: "https://www.googleapis.com/service_accounts/v1/jwk/YOUR-SERVICE-ACCOUNT-EMAIL"
-    # This must match the "aud" field in the JWT. You can add multiple
-    # audiences to accept JWTs from multiple clients.
-    x-google-audiences: "echo.endpoints.sample.google.com"
-  # This section configures authentication using Google OAuth2 ID Tokens.
-  # ID Tokens can be obtained using OAuth2 clients, and can be used to access
-  # your API on behalf of a particular user.
-  google_id_token:
-    authorizationUrl: ""
-    flow: "implicit"
-    type: "oauth2"
-    x-google-issuer: "https://accounts.google.com"
-    x-google-jwks_uri: "https://www.googleapis.com/oauth2/v3/certs"
-    # Your OAuth2 client's Client ID must be added here. You can add
-    # multiple client IDs to accept tokens from multiple clients.
-    x-google-audiences: "YOUR-CLIENT-ID"
+        description: "Id for the pinging node"
+      nodeIP:
+        type: "string"
+        description: "IP Address for the pinging node"
+      nodePort:
+        type: "string"
+        description: "Port for the pinging node"
+      rpcId:
+        type: "string"
+        description: "Request Id used for validation"
+  bodyNode:
+    properties:
+      nodeIP:
+        type: "string"
+        description: "IP Address for the requesting node"
+      nodePort:
+        type: "string"
+        description: "Port for the requesting node"
+      rpcId:
+        type: "string"
+        description: "Request Id used for validation"

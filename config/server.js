@@ -22,18 +22,9 @@ app.set("views", path.join(__dirname, "./../views/"));
 var args = process.argv.slice(2);
 const port = args[0];
 
-app.get(apiPath + "node", (request, response) => {
-  
-    if (request.accepts('html')) {
-      response.render('index', {title: 'Hey!', message: 'This works :-)', node: global.node, buckets: global.BucketManager.buckets})
-      return;
-    }
-  
-    if (request.accepts('json')) {
-      response.json({ buckets: global.BucketManager.buckets });
-      return;
-    }
-
+//For presentation
+app.get("/", (request, response) => {
+  response.render('index', {title: 'Hey!', message: 'This works :-)', node: global.node, buckets: global.BucketManager.buckets})
 });
 
 //PING ENDPOINT - has to be renamed to /api/kademlia/nodes/ping??
