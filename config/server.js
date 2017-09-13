@@ -27,8 +27,8 @@ app.get("/", (request, response) => {
   response.render('index', {title: 'Hey!', message: 'This works :-)', node: global.node, buckets: global.BucketManager.buckets})
 });
 
-//PING ENDPOINT - has to be renamed to /api/kademlia/nodes/ping??
-app.get(apiPath + "ping", (request, response) => {
+//PING ENDPOINT
+app.get(apiPath + "info/ping", (request, response) => {
   console.log("Ping message from node ", request.body.nodeId);
   console.log("Buckets", global.BucketManager.buckets);
   requestNode = new Node(
