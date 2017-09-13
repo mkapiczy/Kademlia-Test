@@ -20,11 +20,8 @@ exports.init = function(nodeIpAddr, nodePort) {
     global.node = new Node(nodeId, nodeIpAddr, nodePort);
     global.BucketManager.updateNodeInBuckets(global.baseNode);
 
-    communicator.sendPing(global.node, global.baseNode, function(result) {
-      console.log(result);
-      communicator.sendFindNode(global.node, global.baseNode, function(result) {
-        console.log("Find_node done");
-      });
+    communicator.sendFindNode(global.node, global.baseNode, function(result) {
+      console.log("Find_node done");
     });
   } else {
     nodeId = constants.BASE_NODE_ID;
