@@ -14,6 +14,10 @@ const app = express();
 
 const apiPath = "/api/kademlia/";
 
+//public purposes
+app.set("views", path.join(__dirname, ".././views/"));
+app.use("/views", express.static(path.join(__dirname, ".././views")));
+
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 app.set("view engine", "pug");
