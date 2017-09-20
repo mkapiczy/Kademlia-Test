@@ -24,7 +24,12 @@ const port = args[0];
 
 //For presentation
 app.get("/", (request, response) => {
-  response.render('index', {title: 'Hey!', message: 'This works :-)', node: global.node, buckets: global.BucketManager.buckets})
+  response.render('index', {title: 'Hey!', message: 'This works :-)', node: global.node, buckets: global.BucketManager.buckets});
+});
+
+//Data view
+app.get("/data", (request, response) => {
+  response.render('dataView', {title: 'Hey!', message: 'This works :-)', node: global.node});
 });
 
 //PING ENDPOINT

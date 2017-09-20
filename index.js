@@ -4,13 +4,19 @@ const dotenv = require("dotenv");
 
 // custom config modules
 const constants = require("./config/constants");
-const httpApp = require("./config/server")
+const httpApp = require("./config/server");
 
 // custom modules
-const app = require("./custom_modules/app")
+const app = require("./custom_modules/app");
 
+const path = require("path");
 const webApp = express();
-webApp.use(httpApp)
+
+webApp.use(httpApp);
+webApp.set("view engine", "pug");
+webApp.set("views", path.join(__dirname, "/views/"));
+//For making the folder public to pug script.
+webApp.use("/views", express.static(path.join(__dirname, "/views")));
 
 // necessary to read environment parameters from .env file
 dotenv.load();

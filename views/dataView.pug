@@ -5,17 +5,18 @@ html
 		link(rel="stylesheet", href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap-theme.min.css", integrity="sha384-fLW2N01lMqjakBkx3l/M9EahuwpSfeNvV63J5ezn3uZzapT0u7EYsXMjQV+0En5r", crossorigin="anonymous")
 		script(src="https://code.jquery.com/jquery-2.2.4.js", integrity="sha256-iT6Q9iMJYuQiMWNd9lDyBUStIq/8PuOW33aOqmvFpqI=", crossorigin="anonymous")
 		script(src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js", integrity="sha384-0mSbJDEHialfmuBBQP6A4Qrprq5OVfW37PRR3j5ELqxss1yVqOtnepnHVP9aJ7xS", crossorigin="anonymous")
+		script(src="/views/dataViewJs.js")
 	body
 		.container
 			div
 				br
-				a(href="/data")
+				a(href="/")
 					button.btn.btn-primary 
-						|  Data Manager 
+						|  Node information
 			p
 				.panel.panel-primary
 					.panel-heading 
-						h3 KademliaGolf - Node information:
+						h3 KademliaGolf - Node Data information:
 					.panel-body 
 						h4 
 							b Node id: 
@@ -26,20 +27,22 @@ html
 						h4
 							b IP: 
 							| #{node.ipAddr}
+						br
+						h4
+							b Store Value:
+							br
+							br
+							div(style="float: left;") Name: 
+							input#storeValue(type='text', value='')
+							br
+							div(style="float:left;") Value:  
+							input#storeValue(type='password', value='')
+							div(style="float: left;")
+							br
+							br
+							input#btnStore(type='button', value='Store')
+							br
+							br
 						hr
 						div
-							b Buckets
-							p
-								each bucket in buckets
-									div.col-md-3
-										.panel.panel-success
-											.panel-heading Bucket id: #{bucket.index}
-											.panel-body 
-												p Nodes in this bucket:
-													each node in bucket.nodesList
-														div
-															a(href=node.ipAddr +':' + node.port + "/")
-																button.btn.btn-block.btn-primary 
-																	span.glyphicon.glyphicon-hdd
-																	|  Id: #{node.id} - Port: #{node.port}
-														p
+							b Data: 
