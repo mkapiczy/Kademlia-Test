@@ -37,7 +37,7 @@ exports.sendPing = function(senderNode, nodeToPing, callBack) {
   });
 };
 
-exports.sendFindNode = function(senderNode, recipientNode, callBack) {
+exports.sendFindNode = function(closestToId, recipientNode, callBack) {
   console.log("Buckets before find node", global.BucketManager.buckets);
   var requestRpcId = util.createRandomAlphaNumericIdentifier(20);
 
@@ -47,10 +47,11 @@ exports.sendFindNode = function(senderNode, recipientNode, callBack) {
       recipientNode.ipAddr +
       ":" +
       recipientNode.port +
-      "/api/kademlia/nodes/" + senderNode.id,
+      "/api/kademlia/nodes/" + closestToId,
     body: {
-      nodeIP: senderNode.ipAddr,
-      nodePort: senderNode.port,
+      nodeId: global.node.id,
+      nodeIP: global.node.ipAddr,
+      nodePort: global.node.port,
       rpcId: requestRpcId
     },
     json: true

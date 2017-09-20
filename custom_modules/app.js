@@ -3,6 +3,7 @@ const KBucket = require("./kbucket");
 const Node = require("./node");
 const constants = require("./../config/constants");
 const BucketManager = require("./BucketManager");
+const DataManager = require("./DataManager");
 const communicator = require("./communicator");
 
 global.baseNode = new Node(
@@ -12,6 +13,7 @@ global.baseNode = new Node(
 );
 
 global.BucketManager = new BucketManager();
+global.DataManager = new DataManager();
 
 exports.init = function(nodeIpAddr, nodePort) {
   if (nodePort != constants.BASE_NODE_PORT) {
@@ -19,8 +21,8 @@ exports.init = function(nodeIpAddr, nodePort) {
     console.log(nodeId + " : " + nodeIpAddr + " : " + nodePort);
     global.node = new Node(nodeId, nodeIpAddr, nodePort);
     global.BucketManager.updateNodeInBuckets(global.baseNode);
-
-    communicator.sendFindNode(global.node, global.baseNode, function(result) {
+    
+    communicator.sendFindNode(global.node.id, global.baseNode, function(result) {
       console.log("Find_node done");
     });
   } else {
