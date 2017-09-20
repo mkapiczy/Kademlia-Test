@@ -93,11 +93,11 @@ app.get(apiPath + "nodes/:id", (request, response) => {
 
 //STORE VALUE ENDPOINT
 app.post(apiPath + "nodes/data", (request, response) => {
-  global.DataManager.storeValue(request.body.name, request.body.value);
-
-  response.status(HttpStatus.OK);
-  //Return values in node
-  response.send('post received!');
+  global.DataManager.storeValue(request.body.name, request.body.value, () => {
+    response.status(HttpStatus.OK);
+    //Return values in node
+    response.send('post received!');
+  });
 });
 
 //Endpoint for testing ping operation
