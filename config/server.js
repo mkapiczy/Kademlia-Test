@@ -101,6 +101,17 @@ app.post(apiPath + "nodes/data", (request, response) => {
   response.send("post received!");
 });
 
+app.post(apiPath + "data", (request, response) => {
+  console.log("Store value request received!");
+  global.DataManager.dataStorage.push({
+    key: request.body.key,
+    value: request.body.value
+  });
+  response.status(HttpStatus.OK);
+  //Return values in node
+  response.send("post received!");
+});
+
 //Endpoint for testing ping operation
 app.get("/test/ping", (request, response) => {
   communicator.sendPing(global.node, global.baseNode, function(result) {
