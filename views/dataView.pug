@@ -54,3 +54,10 @@ html
 						hr
 						div
 							b Data: 
+								each data in dataStorage
+									div.col-md-3
+										.panel.panel-success
+											.panel-body 
+												div
+													p
+													|	Key: #{data.key} - Value: #{data.value}
