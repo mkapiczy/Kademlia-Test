@@ -5,7 +5,7 @@ const util = require("./util");
 const NodeState = require("./../enum/nodeStateEnum");
 const Node = require("./node")
 
-exports.sendPing = function(senderNode, nodeToPing, callBack) {
+exports.sendPing = function (senderNode, nodeToPing, callBack) {
   var requestRpcId = util.createRandomAlphaNumericIdentifier(20);
 
   var requestOptions = {
@@ -20,7 +20,7 @@ exports.sendPing = function(senderNode, nodeToPing, callBack) {
     json: true
   };
 
-  request(requestOptions, function(error, response) {
+  request(requestOptions, function (error, response) {
     if (error) {
       console.log(error);
       callBack(NodeState.NOT_ALIVE);
@@ -37,14 +37,13 @@ exports.sendPing = function(senderNode, nodeToPing, callBack) {
   });
 };
 
-exports.sendFindNode = function(closestToId, recipientNode, callBack) {
+exports.sendFindNode = function (closestToId, recipientNode, callBack) {
   console.log("Buckets before find node", global.BucketManager.buckets);
   var requestRpcId = util.createRandomAlphaNumericIdentifier(20);
 
   var requestOptions = {
     method: "GET",
-    uri:
-      recipientNode.ipAddr +
+    uri: recipientNode.ipAddr +
       ":" +
       recipientNode.port +
       "/api/kademlia/nodes/" + closestToId,
@@ -57,7 +56,7 @@ exports.sendFindNode = function(closestToId, recipientNode, callBack) {
     json: true
   };
 
-  request(requestOptions, function(error, response) {
+  request(requestOptions, function (error, response) {
     if (error) {
       console.log(error);
       callBack(NodeState.NOT_ALIVE);
@@ -66,18 +65,47 @@ exports.sendFindNode = function(closestToId, recipientNode, callBack) {
       if (response.body.rpcId == requestRpcId) {
         global.BucketManager.updateNodeInBuckets(recipientNode);
         closestNodes = response.body.closestNodes;
-        closestNodes.forEach(function(node) {
-          if(node.id !== global.node.id) {
+        closestNodes.forEach(function (node) {
+          if (node.id !== global.node.id) {
             exports.sendPing(global.node, node, function (result) {
               //Adding is handled in ping function
             });
           }
-        
-        }, this); 
+
+        }, this);
         console.log("Buckets after find node", global.BucketManager.buckets);
         callBack(NodeState.ALIVE);
       }
     }
   });
- 
+};
+
+//Function which returns closest nodes istead of adding it to bucket
+exports.sendGetClosestNodesRequest = function (closestToId, recipientNode, callBack) {
+  console.log("Buckets before find node", global.BucketManager.buckets);
+  var requestRpcId = util.createRandomAlphaNumericIdentifier(20);
+
+  var requestOptions = {
+    method: "GET",
+    uri: recipientNode.ipAddr +
+      ":" +
+      recipientNode.port +
+      "/api/kademlia/nodes/" + closestToId,
+    body: {
+      nodeId: global.node.id,
+      nodeIP: global.node.ipAddr,
+      nodePort: global.node.port,
+      rpcId: requestRpcId
+    },
+    json: true
+  };
+
+  request(requestOptions, function (error, response) {
+    if (error) {
+      console.log(error);
+      callBack(NodeState.NOT_ALIVE);
+    } else {
+      callBack(response.body.closestNodes);
+    }
+  });
 };
