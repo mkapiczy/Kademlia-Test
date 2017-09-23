@@ -58,8 +58,9 @@ BucketManager.prototype.getClosestNodes = function(nodeId) {
 
 BucketManager.prototype.getNodesNeighboursFromTheSameBucket = function(nodeId) {
   nodesFromTheNodeBucket = [];
+  console.log("NodeId: " + nodeId)
   var bucketIndex = this.calculateBucketIndexForANode(nodeId);
-
+  console.log("BucketINdex: " + bucketIndex)
   this.buckets[bucketIndex].nodesList.forEach(node => {
     if (node.id !== nodeId) {
       nodesFromTheNodeBucket.push(node);

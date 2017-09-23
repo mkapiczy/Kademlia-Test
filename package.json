@@ -6,18 +6,19 @@
   "author": "",
   "license": "MIT",
   "dependencies": {
+    "async": "^2.5.0",
     "big-integer": "^1.6.25",
     "body-parser": "^1.17.2",
     "dotenv": "^4.0.0",
     "enum": "^2.4.0",
     "express": "^4.15.4",
     "http-status-codes": "^1.2.0",
+    "path": "latest",
+    "pug": "latest",
     "request": "^2.81.0",
     "sha1": "^1.1.1",
     "swagger-tools": "latest",
     "swagger-ui": "latest",
-    "yamljs": "latest",
-    "pug": "latest",
-    "path": "latest"
+    "yamljs": "latest"
   }
 }

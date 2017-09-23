@@ -10,6 +10,5 @@
 10. So now we have alpha * k nodes in our shortlist. We mark somehow already contacted nodes.
 11. We iteratively choose another alpha contacts and repeat the procedure.
 12. Every iterative call updated the closestNode
-13 We continue that untill no node from the response is closer to the key than our closestNode 
-or we get k probed and active nodes i shortlist.
+13 We continue that untill no node from the response is closer to the key than our closestNode.
 14. We have the shortlist so we sort it by distance to the key, and get k -1.

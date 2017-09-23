@@ -19,9 +19,11 @@ app.set("views", path.join(__dirname, ".././views/"));
 app.use("/views", express.static(path.join(__dirname, ".././views")));
 
 app.use(bodyParser.json());
-app.use(bodyParser.urlencoded({
-  extended: true
-}));
+app.use(
+  bodyParser.urlencoded({
+    extended: true
+  })
+);
 app.set("view engine", "pug");
 app.set("views", path.join(__dirname, "./../views/"));
 
@@ -30,9 +32,9 @@ const port = args[0];
 
 //For presentation
 app.get("/", (request, response) => {
-  response.render('index', {
-    title: 'Hey!',
-    message: 'This works :-)',
+  response.render("index", {
+    title: "Hey!",
+    message: "This works :-)",
     node: global.node,
     buckets: global.BucketManager.buckets
   });
@@ -40,9 +42,9 @@ app.get("/", (request, response) => {
 
 //Data view
 app.get("/data", (request, response) => {
-  response.render('dataView', {
-    title: 'Hey!',
-    message: 'This works :-)',
+  response.render("dataView", {
+    title: "Hey!",
+    message: "This works :-)",
     node: global.node,
     dataStorage: global.DataManager.dataStorage
   });
@@ -93,16 +95,15 @@ app.get(apiPath + "nodes/:id", (request, response) => {
 
 //STORE VALUE ENDPOINT
 app.post(apiPath + "nodes/data", (request, response) => {
-  global.DataManager.storeValue(request.body.name, request.body.value, () => {
-    response.status(HttpStatus.OK);
-    //Return values in node
-    response.send('post received!');
-  });
+  global.DataManager.storeValue(request.body.name, request.body.value);
+  response.status(HttpStatus.OK);
+  //Return values in node
+  response.send("post received!");
 });
 
 //Endpoint for testing ping operation
 app.get("/test/ping", (request, response) => {
-  communicator.sendPing(global.node, global.baseNode, function (result) {
+  communicator.sendPing(global.node, global.baseNode, function(result) {
     response.status(HttpStatus.OK);
     response.setHeader("Content-Type", "application/json");
     response.json(JSON.stringify(result));
@@ -111,7 +112,7 @@ app.get("/test/ping", (request, response) => {
 
 //Endpoint for testing ping operation
 app.get("/test/find_node", (request, response) => {
-  communicator.sendFindNode(global.node.id, global.baseNode, function (result) {
+  communicator.sendFindNode(global.node.id, global.baseNode, function(result) {
     console.log(result);
     response.status(HttpStatus.OK);
     response.setHeader("Content-Type", "application/json");
@@ -120,7 +121,7 @@ app.get("/test/find_node", (request, response) => {
 });
 
 var swaggerDoc = YAML.load("openapi.yaml");
-swaggerTools.initializeMiddleware(swaggerDoc, function (middleware) {
+swaggerTools.initializeMiddleware(swaggerDoc, function(middleware) {
   app.use(middleware.swaggerUi());
 });
 
