@@ -109,3 +109,35 @@ exports.sendGetClosestNodesRequest = function (closestToId, recipientNode, callB
     }
   });
 };
+
+exports.sendStoreValue = function (recipientNode, key, value, callBack) {
+  console.log("Send store value called!");
+  var requestRpcId = util.createRandomAlphaNumericIdentifier(20);
+
+  var requestOptions = {
+    method: "POST",
+    uri: recipientNode.ipAddr +
+      ":" +
+      recipientNode.port +
+      "/api/kademlia/data",
+    body: {
+      nodeId: global.node.id,
+      nodeIP: global.node.ipAddr,
+      nodePort: global.node.port,
+      rpcId: requestRpcId,
+      key: key,
+      value: value
+    },
+    json: true
+  };
+
+  request(requestOptions, function (error, response) {
+    if (error) {
+      console.log(error);
+      callBack(NodeState.NOT_ALIVE);
+    } else {
+      console.log("Response in communicator: " + response);
+      callBack(NodeState.ALIVE);
+    }
+  });
+}

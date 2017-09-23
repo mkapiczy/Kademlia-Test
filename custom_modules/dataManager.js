@@ -5,10 +5,11 @@ const async = require("async");
 
 var shortlist = [];
 var closestNode;
+var globalValue;
 
 function DataManager() {
   this.dataStorage = [];
-  this.dataOriginatedFromNode = []; //The originator is responsible of republishing data
+  // this.dataOriginatedFromNode = []; //The originator is responsible of republishing data
 }
 
 DataManager.prototype.storeValue = function(key, value) {
@@ -18,8 +19,8 @@ DataManager.prototype.storeValue = function(key, value) {
   console.log("Name " + key);
   console.log("Value " + value);
   console.log("hashed key: " + hashedKey);
-
-  this.dataOriginatedFromNode.push({
+  globalValue = value;
+  this.dataStorage.push({
     key: hashedKey,
     value: value
   });
@@ -67,6 +68,7 @@ sendAsyncFindNode = function(alphaNodes, hashedKey) {
 
     addIfUniqueToShortlist(alphaNodes, true);
     addIfUniqueToShortlist(resultArray, false);
+    console.log("shortlist length after add: " + shortlist.length);
 
     if (updateClosestNode(hashedKey)) {
       alphaNodes = [];
@@ -77,9 +79,22 @@ sendAsyncFindNode = function(alphaNodes, hashedKey) {
       });
       console.log("Alpha: " + alphaNodes);
       sendAsyncFindNode(alphaNodes, hashedKey);
-    }
+    } else {
+      //remove ourselves from the shortlist
+      console.log("Shortlist size before filter: " + shortlist.length)
+      shortlist = shortlist.filter(nd => {
+        return nd.id !== global.node.id;
+      });
+      console.log("Shortlist size after filter: " + shortlist.length)
+      shortlist = shortlist.slice(0, constants.k);
+      console.log("Shortlist size after slice: " + shortlist.length)
 
-    console.log("shortlist length after add: " + shortlist.length);
+      shortlist.forEach(node => {
+        communicator.sendStoreValue(node, hashedKey, globalValue, result => {
+          console.log("Send store value result in data manager: " + result);
+        });
+      });
+    }
   });
 
   console.log("Finished");
