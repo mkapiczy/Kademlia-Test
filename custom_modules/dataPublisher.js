@@ -4,37 +4,37 @@ const communicator = require("./communicator");
 const async = require("async");
 
 var currentClosestNode;
-var shortlist = [];
 
 function DataPublisher() {}
 
 DataPublisher.prototype.publishToKNodesClosestToTheKey = function(hashedKey, value) {
+  var shortlist = [];
   var alphaNodes = global.BucketManager.getAlphaClosestNodes(hashedKey);
   currentClosestNode = alphaNodes[0];
-  sendAsyncFindNode(alphaNodes, value, hashedKey);
+  sendAsyncFindNodes(alphaNodes, hashedKey, shortlist, (resultShortlist) =>{
+    sendStoreValueToAllNodesInTheShortlist(resultShortlist, hashedKey, value);
+  });
 };
 
-sendAsyncFindNode = function(alphaNodes, value, hashedKey) {
+
+sendAsyncFindNodes = function(alphaNodes, hashedKey, shortlist, callback) {
   asyncCallsArray = prepareAsyncCalls(alphaNodes, hashedKey);
  
   async.parallel(asyncCallsArray, function(err, results) {
     if(err){
       console.log("An error occured during async call: ", err);
     }
-    console.log("Results length: " + results.length)
+   
     results = mergeAsyncCallsResultsIntoOneArray(results);
-    console.log("Results length: " + results.length)
-
-    updateShortlistAfterAsyncCalls(alphaNodes, results);
+    shortlist = updateShortlistAfterAsyncCalls(shortlist, alphaNodes, results);
   
-    if (updateClosestNode(hashedKey)) {
-      nextCallAlphaNodes = getNextCallAlphaNodesFromShortlist();
-      sendAsyncFindNode(nextCallAlphaNodes, hashedKey);
+    if (updateClosestNode(shortlist, hashedKey)) {
+      nextCallAlphaNodes = getNextCallAlphaNodesFromShortlist(shortlist);
+      sendAsyncFindNodes(nextCallAlphaNodes, hashedKey, shortlist, callback);
     } else {
-      shortlist = removeGlobalNodeFromShortlist();
+      shortlist = removeGlobalNodeFromShortlist(shortlist);
       shortlist = shortlist.slice(0, constants.k);
-      console.log("Shrotlist length before sending store value: " + shortlist.length)
-      sendStoreValueToAllNodesInTheShortlist(hashedKey, value);
+      callback(shortlist);
     }
   });
 };
@@ -59,12 +59,13 @@ mergeAsyncCallsResultsIntoOneArray = function(unMergedResults){
   return mergedResults;
 }
 
-updateShortlistAfterAsyncCalls = function(alphaNodes, results){
-  addIfUniqueToShortlist(alphaNodes, true);
-  addIfUniqueToShortlist(results, false);
+updateShortlistAfterAsyncCalls = function(shortlist, alphaNodes, results){
+  shortlist = addIfUniqueToShortlist(shortlist, alphaNodes, true);
+  shortlist = addIfUniqueToShortlist(shortlist, results, false);
+  return shortlist;
 }
 
-updateClosestNode = function(hashedKey) {
+updateClosestNode = function(shortlist, hashedKey) {
   shortlist = global.BucketManager.sortNodesListByDistanceAscending(hashedKey, shortlist);
   newClosestNode = shortlist[0];
 
@@ -77,7 +78,7 @@ updateClosestNode = function(hashedKey) {
   return false;
 };
 
-getNextCallAlphaNodesFromShortlist = function(){
+getNextCallAlphaNodesFromShortlist = function(shortlist){
   nextCallAlphaNodes = []
   shortlist.forEach(node => {
     if (node.isContacted === false && nextCallAlphaNodes.length < constants.alpha) {
@@ -87,14 +88,14 @@ getNextCallAlphaNodesFromShortlist = function(){
   return nextCallAlphaNodes;
 }
 
-removeGlobalNodeFromShortlist = function(){
+removeGlobalNodeFromShortlist = function(shortlist){
   shortlist = shortlist.filter(nd => {
     return nd.id !== global.node.id;
   });
   return shortlist;
 }
 
-sendStoreValueToAllNodesInTheShortlist = function(hashedKey, value){
+sendStoreValueToAllNodesInTheShortlist = function(shortlist, hashedKey, value){
   shortlist.forEach(node => {
     communicator.sendStoreValue(node, hashedKey, value, result => {
       console.log("Send store value result in data manager: " + result);
@@ -130,7 +131,7 @@ removeNodeDuplicates = function(keyFn, array) {
   });
 };
 
-addIfUniqueToShortlist = function(nodes, isContacted) {
+addIfUniqueToShortlist = function(shortlist, nodes, isContacted) {
   nodes.forEach(node => {
     var isInShortList = false;
 
@@ -145,6 +146,7 @@ addIfUniqueToShortlist = function(nodes, isContacted) {
       shortlist.push(node);
     }
   });
+  return shortlist;
 };
 
 module.exports = DataPublisher;
