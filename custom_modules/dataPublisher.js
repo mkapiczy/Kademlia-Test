@@ -3,48 +3,63 @@ const util = require("./util");
 const communicator = require("./communicator");
 const async = require("async");
 
-var currentClosestNode;
-
 function DataPublisher() {}
 
 DataPublisher.prototype.publishToKNodesClosestToTheKey = function(key, value) {
   var shortlist = [];
   var hashedKey = util.createHashFromKey(key, constants.B / 8);
-  console.log("Publish key: " + hashedKey)
+  console.log("Publish key: " + hashedKey);
   var alphaNodes = global.BucketManager.getAlphaClosestNodes(hashedKey);
-  if(alphaNodes.length === 0) return;
-  
-  currentClosestNode = alphaNodes[0];
-  sendAsyncFindNodes(alphaNodes, hashedKey, shortlist, (resultShortlist) =>{
+  if (alphaNodes.length === 0) return;
+  sendAsyncFindNodes(alphaNodes, hashedKey, shortlist, null, resultShortlist => {
     sendStoreValueToAllNodesInTheShortlist(resultShortlist, hashedKey, value);
   });
 };
 
-DataPublisher.prototype.findValue = function(key){
+DataPublisher.prototype.findValue = function(key, callback) {
   var shortlist = [];
-  var alphaNodes = global.BucketManager.getAlphaClosestNodes(hashedKey);
-  
-  sendAsyncFindNodes(alphaNodes, key, shortlist, (resultShortlist) =>{
-    // send get value to first node, if it does nto have it to the next and so on
+  var alphaNodes = global.BucketManager.getAlphaClosestNodes(key);
+
+  sendAsyncFindNodes(alphaNodes, key, shortlist, null, resultShortlist => {
+    var iterator = 0;
+    var value = askNodeForAValue(resultShortlist, iterator, key, callback);
   });
+};
 
-}
+askNodeForAValue = function(shortlist, iterator, key, callback) {
+  nodeToAsk = shortlist[iterator];
+  communicator.sendFindValue(nodeToAsk, key, value => {
+    if (value) {
+      callback(nodeToAsk.id, value);
+    } else {
+      if (iterator < shortlist.length - 1) {
+        iterator++;
+        askNodeForAValue(shortlist, iterator, key, callback);
+      } else {
+        console.log("All nodes asked and no value found!");
+        callback(null, null);
+      }
+    }
+  });
+};
 
-
-sendAsyncFindNodes = function(alphaNodes, hashedKey, shortlist, callback) {
+sendAsyncFindNodes = function(alphaNodes, hashedKey, shortlist, currentClosestNode, callback) {
+  if(!currentClosestNode){
+    currentClosestNode = alphaNodes[0];
+  }
   asyncCallsArray = prepareAsyncCalls(alphaNodes, hashedKey);
- 
+
   async.parallel(asyncCallsArray, function(err, results) {
-    if(err){
+    if (err) {
       console.log("An error occured during async call: ", err);
     }
-   
+
     results = mergeAsyncCallsResultsIntoOneArray(results);
     shortlist = updateShortlistAfterAsyncCalls(shortlist, alphaNodes, results);
-  
-    if (updateClosestNode(shortlist, hashedKey)) {
+
+    if (updateClosestNode(shortlist, currentClosestNode, hashedKey)) {
       nextCallAlphaNodes = getNextCallAlphaNodesFromShortlist(shortlist);
-      sendAsyncFindNodes(nextCallAlphaNodes, hashedKey, shortlist, callback);
+      sendAsyncFindNodes(nextCallAlphaNodes, hashedKey, shortlist, currentClosestNode, callback);
     } else {
       shortlist = removeGlobalNodeFromShortlist(shortlist);
       shortlist = shortlist.slice(0, constants.k);
@@ -53,34 +68,39 @@ sendAsyncFindNodes = function(alphaNodes, hashedKey, shortlist, callback) {
   });
 };
 
-prepareAsyncCalls = function(alphaNodes, hashedKey){
+prepareAsyncCalls = function(alphaNodes, hashedKey) {
   asyncCallsArray = [];
   alphaNodes.forEach(node => {
     asyncCallsArray.push(function(callback) {
-      communicator.sendGetClosestNodesRequest(hashedKey, node, function(result){
+      communicator.sendGetClosestNodesRequest(hashedKey, node, function(
+        result
+      ) {
         callback(null, result);
       });
     });
   });
   return asyncCallsArray;
-}
+};
 
-mergeAsyncCallsResultsIntoOneArray = function(unMergedResults){
+mergeAsyncCallsResultsIntoOneArray = function(unMergedResults) {
   var mergedResults = [];
   unMergedResults.forEach(result => {
     mergedResults = mergedResults.concat(result);
   });
   return mergedResults;
-}
+};
 
-updateShortlistAfterAsyncCalls = function(shortlist, alphaNodes, results){
+updateShortlistAfterAsyncCalls = function(shortlist, alphaNodes, results) {
   shortlist = addIfUniqueToShortlist(shortlist, alphaNodes, true);
   shortlist = addIfUniqueToShortlist(shortlist, results, false);
   return shortlist;
-}
+};
 
-updateClosestNode = function(shortlist, hashedKey) {
-  shortlist = global.BucketManager.sortNodesListByDistanceAscending(hashedKey, shortlist);
+updateClosestNode = function(shortlist, currentClosestNode, hashedKey) {
+  shortlist = global.BucketManager.sortNodesListByDistanceAscending(
+    hashedKey,
+    shortlist
+  );
   newClosestNode = shortlist[0];
 
   if (newClosestNode.id !== currentClosestNode.id) {
@@ -92,30 +112,33 @@ updateClosestNode = function(shortlist, hashedKey) {
   return false;
 };
 
-getNextCallAlphaNodesFromShortlist = function(shortlist){
-  nextCallAlphaNodes = []
+getNextCallAlphaNodesFromShortlist = function(shortlist) {
+  nextCallAlphaNodes = [];
   shortlist.forEach(node => {
-    if (node.isContacted === false && nextCallAlphaNodes.length < constants.alpha) {
+    if (
+      node.isContacted === false &&
+      nextCallAlphaNodes.length < constants.alpha
+    ) {
       nextCallAlphaNodes.push(node);
     }
   });
   return nextCallAlphaNodes;
-}
+};
 
-removeGlobalNodeFromShortlist = function(shortlist){
+removeGlobalNodeFromShortlist = function(shortlist) {
   shortlist = shortlist.filter(nd => {
     return nd.id !== global.node.id;
   });
   return shortlist;
-}
+};
 
-sendStoreValueToAllNodesInTheShortlist = function(shortlist, hashedKey, value){
+sendStoreValueToAllNodesInTheShortlist = function(shortlist, hashedKey, value) {
   shortlist.forEach(node => {
     communicator.sendStoreValue(node, hashedKey, value, result => {
       console.log("Send store value result in data manager: " + result);
     });
   });
-}
+};
 
 selectAlphaClosestNodes = function(closestNodes, hashedKey) {
   closestNodes = global.BucketManager.sortNodesListByDistanceAscending(

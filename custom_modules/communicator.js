@@ -141,3 +141,33 @@ exports.sendStoreValue = function (recipientNode, key, value, callBack) {
     }
   });
 }
+
+exports.sendFindValue = function (recipientNode, key, callBack) {
+  console.log("Send find value was called!");
+  var requestRpcId = util.createRandomAlphaNumericIdentifier(20);
+
+  var requestOptions = {
+    method: "GET",
+    uri: recipientNode.ipAddr +
+      ":" +
+      recipientNode.port +
+      "/api/kademlia/local_value",
+    body: {
+      nodeId: global.node.id,
+      nodeIP: global.node.ipAddr,
+      nodePort: global.node.port,
+      rpcId: requestRpcId,
+      key: key
+    },
+    json: true
+  };
+
+  request(requestOptions, function (error, response) {
+    if (error) {
+      console.log(error);
+      callBack(NodeState.NOT_ALIVE);
+    } else {
+      callBack(response.body.value);
+    }
+  });
+}

@@ -32,7 +32,6 @@ app.set("views", path.join(__dirname, "./../views/"));
 var args = process.argv.slice(2);
 const port = args[0];
 
-
 //For presentation
 app.get("/", (request, response) => {
   response.render("index", {
@@ -47,7 +46,7 @@ app.get("/", (request, response) => {
 app.get("/data", (request, response) => {
   var dataForView = [];
   global.DataManager.dataStorage.forEach(function(value, key) {
-    dataForView.push({key: key, value:value}); 
+    dataForView.push({ key: key, value: value });
   });
 
   response.render("dataView", {
@@ -103,7 +102,7 @@ app.get(apiPath + "nodes/:id", (request, response) => {
 
 //STORE VALUE ENDPOINT
 app.post(apiPath + "nodes/data", (request, response) => {
-  var key = request.body.name; 
+  var key = request.body.name;
   var value = request.body.value;
   global.DataManager.storeValueWithKeyHashing(key, value);
   dataPublisher.publishToKNodesClosestToTheKey(key, value);
@@ -119,19 +118,35 @@ app.post(apiPath + "data", (request, response) => {
   response.send("post received!");
 });
 
-app.get(apiPath + "value", (request,response) =>{
-    value = global.DataManager.findValue(request.body.key);
-    if(value){
-
-    } else{
-      value = dataPublisher.findValue(key);
-    }
-
-    console.log("Find value: " +value);
-    // render view
-    response.status(HttpStatus.OK);
-    response.send();
+app.get(apiPath + "value", (request, response) => {
+  console.log("Find value request received: " + request.query.key);
+  key =  request.query.key;
+  value = undefined;
+  if (value) {
+    console.log("Local value: " + value);
+  } else {
+    dataPublisher.findValue(key, (nodeId, value) => {
+      if(value){
+        console.log("Value for the key " + key + " found in node " + nodeId);
+        console.log("Value: " + value);
+        // render view
+        response.send(value)
+      } else{
+        console.log("Value for the key " + key + " not found!");
+        //render view
+        response.send(value)
+      }
+    });
+  }
 });
+
+
+app.get(apiPath + "local_value", (request, response) => {
+  value = global.DataManager.findValue(request.body.key);
+  response.json({ value: value });
+});
+
+
 
 //Endpoint for testing ping operation
 app.get("/test/ping", (request, response) => {
