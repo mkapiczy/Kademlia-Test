@@ -20,6 +20,9 @@ DataManager.prototype.storeValueWithKeyHashing = function(key, value) {
   this.dataStorage.set(hashedKey, value);
 };
 
-DataManager.prototype.findValue = function(key) {};
+DataManager.prototype.findValue = function(key) {
+  value = this.dataStorage.get(key);
+  return value;
+};
 
 module.exports = DataManager;

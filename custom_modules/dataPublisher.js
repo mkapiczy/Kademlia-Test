@@ -20,6 +20,17 @@ DataPublisher.prototype.publishToKNodesClosestToTheKey = function(key, value) {
   });
 };
 
+DataPublisher.prototype.findValue = function(key){
+  var shortlist = [];
+  var alphaNodes = global.BucketManager.getAlphaClosestNodes(hashedKey);
+  
+  sendAsyncFindNodes(alphaNodes, key, shortlist, (resultShortlist) =>{
+    // send get value to first node, if it does nto have it to the next and so on
+  });
+
+}
+
+
 sendAsyncFindNodes = function(alphaNodes, hashedKey, shortlist, callback) {
   asyncCallsArray = prepareAsyncCalls(alphaNodes, hashedKey);
  

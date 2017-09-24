@@ -120,7 +120,17 @@ app.post(apiPath + "data", (request, response) => {
 });
 
 app.get(apiPath + "value", (request,response) =>{
+    value = global.DataManager.findValue(request.body.key);
+    if(value){
 
+    } else{
+      value = dataPublisher.findValue(key);
+    }
+
+    console.log("Find value: " +value);
+    // render view
+    response.status(HttpStatus.OK);
+    response.send();
 });
 
 //Endpoint for testing ping operation
