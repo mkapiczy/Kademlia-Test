@@ -9,6 +9,8 @@ var YAML = require("yamljs");
 const communicator = require("./../custom_modules/communicator");
 const Node = require("./../custom_modules/node");
 const util = require("./../custom_modules/util");
+const DataPublisher = require("./../custom_modules/dataPublisher");
+const dataPublisher = new DataPublisher();
 
 const app = express();
 
@@ -30,6 +32,7 @@ app.set("views", path.join(__dirname, "./../views/"));
 var args = process.argv.slice(2);
 const port = args[0];
 
+
 //For presentation
 app.get("/", (request, response) => {
   response.render("index", {
@@ -42,11 +45,16 @@ app.get("/", (request, response) => {
 
 //Data view
 app.get("/data", (request, response) => {
+  var dataForView = [];
+  global.DataManager.dataStorage.forEach(function(value, key) {
+    dataForView.push({key: key, value:value}); 
+  });
+
   response.render("dataView", {
     title: "Hey!",
     message: "This works :-)",
     node: global.node,
-    dataStorage: global.DataManager.dataStorage
+    dataStorage: dataForView
   });
 });
 
@@ -95,21 +103,24 @@ app.get(apiPath + "nodes/:id", (request, response) => {
 
 //STORE VALUE ENDPOINT
 app.post(apiPath + "nodes/data", (request, response) => {
-  global.DataManager.storeValue(request.body.name, request.body.value);
+  var key = request.body.name; 
+  var value = request.body.value;
+  global.DataManager.storeValueWithKeyHashing(key, value);
+  dataPublisher.publishToKNodesClosestToTheKey(key, value);
   response.status(HttpStatus.OK);
-  //Return values in node
   response.send("post received!");
 });
 
+// TODO Naming endpoints better for two different store value calls!!!
 app.post(apiPath + "data", (request, response) => {
   console.log("Store value request received!");
-  global.DataManager.dataStorage.push({
-    key: request.body.key,
-    value: request.body.value
-  });
+  global.DataManager.storeValue(request.body.key, request.body.value);
   response.status(HttpStatus.OK);
-  //Return values in node
   response.send("post received!");
+});
+
+app.get(apiPath + "value", (request,response) =>{
+
 });
 
 //Endpoint for testing ping operation

@@ -61,7 +61,7 @@ BucketManager.prototype.getAlphaClosestNodes = function(key) {
   
   if (kClosestNodesToTheKey.length === 0) {
     console.log("No close nodes found for the key: "+ key);
-    return; 
+    return []; 
   }
 
   kClosestNodesToTheKey = this.sortNodesListByDistanceAscending(key, kClosestNodesToTheKey);

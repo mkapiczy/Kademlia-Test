@@ -7,15 +7,18 @@ var currentClosestNode;
 
 function DataPublisher() {}
 
-DataPublisher.prototype.publishToKNodesClosestToTheKey = function(hashedKey, value) {
+DataPublisher.prototype.publishToKNodesClosestToTheKey = function(key, value) {
   var shortlist = [];
+  var hashedKey = util.createHashFromKey(key, constants.B / 8);
+  console.log("Publish key: " + hashedKey)
   var alphaNodes = global.BucketManager.getAlphaClosestNodes(hashedKey);
+  if(alphaNodes.length === 0) return;
+  
   currentClosestNode = alphaNodes[0];
   sendAsyncFindNodes(alphaNodes, hashedKey, shortlist, (resultShortlist) =>{
     sendStoreValueToAllNodesInTheShortlist(resultShortlist, hashedKey, value);
   });
 };
-
 
 sendAsyncFindNodes = function(alphaNodes, hashedKey, shortlist, callback) {
   asyncCallsArray = prepareAsyncCalls(alphaNodes, hashedKey);
