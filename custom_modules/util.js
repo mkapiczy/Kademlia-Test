@@ -29,7 +29,7 @@ exports.createRandomAlphaNumericIdentifier = function (nrOfBytes) {
 exports.createHashFromKey = function (key, nrOfBytes) {
   var sha = crypto
   .createHash("sha1")
-  .update(key)
+  .update(key.toString())
   .digest("hex");
   var parsedInt = parseInt(sha.substr(0, 10), 16);
   return parsedInt % Math.pow(2, nrOfBytes * 8);
