@@ -56,6 +56,19 @@ BucketManager.prototype.getClosestNodes = function(nodeId) {
   return this.getkClosestNodesFromNeighboursList(nodesNeighbours, nodeId);
 };
 
+BucketManager.prototype.getAlphaClosestNodes = function(key) {
+  var kClosestNodesToTheKey = this.getClosestNodes(key);
+  
+  if (kClosestNodesToTheKey.length === 0) {
+    console.log("No close nodes found for the key: "+ key);
+    return; 
+  }
+
+  kClosestNodesToTheKey = this.sortNodesListByDistanceAscending(key, kClosestNodesToTheKey);
+
+  return kClosestNodesToTheKey.slice(0, constants.alpha);
+};
+
 BucketManager.prototype.getNodesNeighboursFromTheSameBucket = function(nodeId) {
   nodesFromTheNodeBucket = [];
   console.log("NodeId: " + nodeId)
