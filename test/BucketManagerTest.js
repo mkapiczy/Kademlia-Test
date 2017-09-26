@@ -4,14 +4,14 @@ const constants = require('./../config/constants');
 const util = require('./../custom_modules/util');
 
 
-var bucketManager;
+let bucketManager;
 
 //For running this test, ping was commented out from kbucket (always add node)
 function getNodesFromFullBucketTest() {
     bucketManager = new BucketManager();
     global.node = new Node(32, 'http://localhost', 8000);
 
-    for(var i = 0; i < 200; i++) {
+    for(let i = 0; i < 200; i++) {
         bucketManager.updateNodeInBuckets(new Node(util.createRandomId(1), 'http://localhost', 8000+i+1));
     }
 
@@ -25,7 +25,7 @@ function getNodesFromFullBucketTest() {
    console.log(bucketManager.buckets[6]);
    console.log(bucketManager.buckets[7]);
 
-   var nodesList = bucketManager.getClosestNodes(30);
+   let nodesList = bucketManager.getClosestNodes(30);
    console.log(nodesList);
 
    nodesList.forEach((node) => {

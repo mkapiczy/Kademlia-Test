@@ -1,5 +1,4 @@
 const util = require("./util");
-const KBucket = require("./kbucket");
 const Node = require("./node");
 const constants = require("./../config/constants");
 const BucketManager = require("./BucketManager");
@@ -16,7 +15,7 @@ global.BucketManager = new BucketManager();
 global.DataManager = new DataManager();
 
 exports.init = function(nodeIpAddr, nodePort) {
-  if (nodePort != constants.BASE_NODE_PORT) {
+  if (nodePort !== constants.BASE_NODE_PORT) {
     nodeId = util.createRandomId(constants.B / 8);
     console.log(nodeId + " : " + nodeIpAddr + " : " + nodePort);
     global.node = new Node(nodeId, nodeIpAddr, nodePort);

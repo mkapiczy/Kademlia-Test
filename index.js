@@ -3,13 +3,10 @@ const express = require("express");
 const dotenv = require("dotenv");
 
 // custom config modules
-const constants = require("./config/constants");
 const httpApp = require("./config/server");
 
 // custom modules
 const app = require("./custom_modules/app");
-
-const path = require("path");
 const webApp = express();
 
 webApp.use(httpApp);
@@ -18,6 +15,6 @@ webApp.use(httpApp);
 dotenv.load();
 
 const nodeIpAddr = process.env.NODE_IP;
-const nodePort = process.argv.slice(2)[0]
+const nodePort = process.argv.slice(2)[0];
 
 app.init(nodeIpAddr, nodePort);

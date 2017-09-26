@@ -1,11 +1,8 @@
-const request = require("request");
-const util = require("./util");
-
 function Node(id, ipAddr, port) {
   this.id = id;
   this.ipAddr = ipAddr;
   this.port = port;
-}
+};
 
 Node.prototype.isValid = function() {
   if (this.id === undefined) {
