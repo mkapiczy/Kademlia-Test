@@ -1,14 +1,12 @@
 const express = require("express");
 const HttpStatus = require("http-status-codes");
 const bodyParser = require("body-parser");
-const pug = require("pug");
 const path = require("path");
 var swaggerTools = require("swagger-tools");
 var YAML = require("yamljs");
 
 const communicator = require("./../custom_modules/communicator");
 const Node = require("./../custom_modules/node");
-const util = require("./../custom_modules/util");
 const DataPublisher = require("./../custom_modules/dataPublisher");
 const dataPublisher = new DataPublisher();
 
