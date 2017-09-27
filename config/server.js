@@ -126,7 +126,7 @@ app.post(apiPath + "data", (request, response) => {
     response.send("post received!");
 });
 
-app.get(apiPath + "value", (request, response) => {
+app.get(apiPath + "data", (request, response) => {
     console.log("Find value request received: " + request.query.key);
     key = request.query.key;
     value = undefined;
