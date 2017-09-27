@@ -17,7 +17,10 @@ DataPublisher.prototype.publishToKNodesClosestToTheKey = function (key, value) {
     });
 };
 
-DataPublisher.prototype.findValue = function (key, callback) {
+DataPublisher.prototype.findValue = function (name, callback) {
+    console.log("Name is: " + name);
+    const key = util.createHashFromKey(name, constants.B / 8);
+    console.log("The key is: " + key);
     let shortlist = [];
     let alphaNodes = global.BucketManager.getAlphaClosestNodes(key);
 
