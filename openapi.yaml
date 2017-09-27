@@ -15,6 +15,7 @@ schemes:
 paths:
   "/nodes/{:id}":
     get:
+      summary: "Find the k closest neighbours to node with id"
       description: "Find the k closest neighbours to node with id"
       operationId: "nodeId"
       produces:
@@ -34,8 +35,27 @@ paths:
           required: true
           schema:
             $ref: "#/definitions/bodyNode"
+  "/nodes/data":
+    post:
+      summary: Add new data to network
+      operationId: publishvalue
+      consumes:
+        - application/json
+      produces:
+        - application/json
+      parameters:
+        - name: data
+          in: body
+          description: New data to be stored in Kademlia Network
+          schema: 
+            $ref: "#/definitions/postData"
+          required: true
+      responses: 
+        200: 
+          description: "200 response"
   "/info/ping":
     get:
+      summary: "Ping the node from the URL"
       description: "Ping the node from the URL"
       operationId: "N/A"
       produces:
@@ -52,6 +72,59 @@ paths:
         required: true
         schema:
           $ref: "#/definitions/ping"
+  "/data":
+    get:
+      summary: "Search for value in Kademlia network"
+      description: "Search for value in Kademlia network"
+      operationId: "N/A"
+      produces:
+      - "application/json"
+      responses:
+        200:
+          description: "OK"
+          schema:
+            $ref: "#/definitions/receivedValue"
+      parameters:
+      - description: "Name of the value to be found"
+        in: query
+        type: string
+        name: key
+        required: true
+    post:
+      summary: Add value to node
+      operationId: storevalue
+      consumes:
+        - application/json
+      produces:
+        - application/json
+      parameters:
+        - name: data
+          in: body
+          description: New data to be stored in node
+          schema: 
+            $ref: "#/definitions/postData"
+          required: true
+      responses: 
+        200: 
+          description: "200 response"  
+  "/local_value":
+    get:
+      summary: "Search for value in node"
+      description: "Search for value in Node"
+      operationId: "N/A"
+      produces:
+      - "application/json"
+      responses:
+        200:
+          description: "OK"
+          schema:
+            $ref: "#/definitions/receivedValue"
+      parameters:
+      - description: "Name of the value to be found"
+        in: query
+        type: string
+        name: key
+        required: true          
 definitions:
   node:
     properties:
@@ -110,3 +183,21 @@ definitions:
       rpcId:
         type: "string"
         description: "Request Id used for validation"
+  postData:
+    properties:
+      name:
+        type: "string"
+        description: "Name of the value to be stored"
+      value:
+        type: "string"
+        description: "Value to be stored"
+  receivedValue:
+    properties:
+      value:
+        type: "string"
+        description: "Value of the found data"
+  receivedKey:
+    properties:
+      key:
+        type: "string"
+        description: "Name of the data to be found"
