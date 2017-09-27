@@ -27,7 +27,7 @@ html
 						h4
 							b IP: 
 							| #{node.ipAddr}
-						br
+						hr
 						h4
 							b Store Value:
 							br
@@ -48,7 +48,9 @@ html
 							div(style="float: left;")
 							br
 							br
-							input#btnStore(type='button', value='Store', onclick='storeData()')
+							button.btn.btn-primary(onclick='storeData()' id='btnStore')
+									span.glyphicon.glyphicon-hdd
+										|  Store
 							br
 							br
 						hr
@@ -57,7 +59,8 @@ html
 								each data in dataStorage
 									div.col-md-3
 										.panel.panel-success
+											.panel-heading Key: #{data.key}
 											.panel-body 
 												div
 													p
-													|	Key: #{data.key} - Value: #{data.value}
+													|	Value: #{data.value}
