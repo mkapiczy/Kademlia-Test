@@ -55,6 +55,16 @@ app.get("/data", (request, response) => {
     });
 });
 
+//Find Value view
+app.get("/find", (request, response) => {
+
+    response.render("findView", {
+        title: "Hey!",
+        message: "This works :-)",
+        node: global.node,
+    });
+});
+
 //PING ENDPOINT
 app.get(apiPath + "info/ping", (request, response) => {
     console.log("Ping message from node ", request.body.nodeId);

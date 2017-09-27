@@ -5,7 +5,7 @@ html
 		link(rel="stylesheet", href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap-theme.min.css", integrity="sha384-fLW2N01lMqjakBkx3l/M9EahuwpSfeNvV63J5ezn3uZzapT0u7EYsXMjQV+0En5r", crossorigin="anonymous")
 		script(src="https://code.jquery.com/jquery-2.2.4.js", integrity="sha256-iT6Q9iMJYuQiMWNd9lDyBUStIq/8PuOW33aOqmvFpqI=", crossorigin="anonymous")
 		script(src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js", integrity="sha384-0mSbJDEHialfmuBBQP6A4Qrprq5OVfW37PRR3j5ELqxss1yVqOtnepnHVP9aJ7xS", crossorigin="anonymous")
-		script(src="/views/js/dataViewJs.js")
+		script(src="/views/js/findViewJs.js")
 	body
 		.container
 			div
@@ -22,7 +22,7 @@ html
 			p
 				.panel.panel-primary
 					.panel-heading 
-						h3 KademliaGolf - Node Data information:
+						h3 KademliaGolf - Find Value in Kademlia Network:
 					.panel-body 
 						h4 
 							b Node id: 
@@ -35,38 +35,23 @@ html
 							| #{node.ipAddr}
 						hr
 						h4
-							b Store Value:
+							b Find Value:
 							br
 							br
-							div(style="float: left;") Name: 
+							div(style="float: left;") Name of Value: 
 							input(
                                 type='text'
                                 name='name'
                                 id='name'
                                 )
-							br
-							div(style="float:left;") Value:  
-							input(
-                                type='text'
-                                name='value'
-                                id='value'
-                            )
-							div(style="float: left;")
+							
 							br
 							br
-							button.btn.btn-primary(onclick='storeData()' id='btnStore')
+							button.btn.btn-primary(onclick='findData()' id='btnSearch')
 									span.glyphicon.glyphicon-hdd
-										|  Store
+										|  Search
 							br
 							br
 						hr
-						div
-							b Data: 
-								each data in dataStorage
-									div.col-md-3
-										.panel.panel-success
-											.panel-heading Key: #{data.key}
-											.panel-body 
-												div
-													p
-													|	Value: #{data.value}
+						b Result:
+						input(type="text", id="result", disabled)
