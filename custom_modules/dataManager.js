@@ -14,8 +14,13 @@ DataManager.prototype.storeValueWithKeyHashing = function(key, value) {
   this.dataStorage.set(hashedKey, value);
 };
 
-DataManager.prototype.findValue = function(key) {
-  return this.dataStorage.get(Number(key));
+DataManager.prototype.findValueByNonHashedKey = function(key) {
+    hashedKey = util.createHashFromKey(key, constants.B / 8);
+    return this.dataStorage.get(Number(hashedKey));
+};
+
+DataManager.prototype.findValueByHashedKey = function(hashedKey) {
+  return this.dataStorage.get(Number(hashedKey));
 };
 
 module.exports = DataManager;

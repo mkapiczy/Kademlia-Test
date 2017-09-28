@@ -129,20 +129,18 @@ app.post(apiPath + "data", (request, response) => {
 app.get(apiPath + "data", (request, response) => {
     console.log("Find value request received: " + request.query.key);
     key = request.query.key;
-    value = undefined;
+    value = global.DataManager.findValueByNonHashedKey(key);
     if (value) {
-        console.log("Local value: " + value);
+        response.send({value: value, node: global.node.id});
     } else {
         dataPublisher.findValue(key, (nodeId, value) => {
             if (value) {
                 console.log("Value for the key " + key + " found in node " + nodeId);
                 console.log("Value: " + value);
-                // render view
-                response.send(value)
+                response.send({value: value, node: nodeId});
             } else {
                 console.log("Value for the key " + key + " not found!");
-                //render view
-                response.send(value)
+                response.send({value: "", node: ""});
             }
         });
     }
@@ -150,7 +148,7 @@ app.get(apiPath + "data", (request, response) => {
 
 
 app.get(apiPath + "local_value", (request, response) => {
-    value = global.DataManager.findValue(request.body.key);
+    value = global.DataManager.findValueByHashedKey(request.body.key);
     response.json({value: value});
 });
 
