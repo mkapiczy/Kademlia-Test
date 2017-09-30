@@ -3,7 +3,7 @@ const Node = require("./kademlia/node");
 const constants = require("./../config/constants");
 const BucketManager = require("./kademlia/BucketManager");
 const DataManager = require("./data/dataManager");
-const communicator = require("./kademlia/communicator");
+const communicator = require("./kademlia/kademliaCommunicator");
 
 global.baseNode = new Node(
   constants.BASE_NODE_ID,

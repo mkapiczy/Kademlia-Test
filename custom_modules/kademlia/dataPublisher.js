@@ -1,6 +1,6 @@
 const constants = require("../../config/constants");
 const util = require("../util");
-const communicator = require("./communicator");
+const communicator = require("./kademliaCommunicator");
 const async = require("async");
 
 function DataPublisher() {

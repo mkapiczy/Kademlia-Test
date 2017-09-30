@@ -1,5 +1,5 @@
 const constants = require("../../config/constants");
-const communicator = require("./communicator");
+const communicator = require("./kademliaCommunicator");
 
 const NodeState = require("../../enum/nodeStateEnum");
 
