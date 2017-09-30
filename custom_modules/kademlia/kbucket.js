@@ -61,13 +61,16 @@ KBucket.prototype.getNodeIndex = function (node) {
 
 KBucket.prototype.updateStateOfTheOldestNodeInTheBucket = function () {
     oldestNodeInTheBucket = this.nodesList[0];
-    communicator.sendPing(global.node, oldestNodeInTheBucket, result => {
-        this.updateNodeAccordingToItsState(oldestNodeInTheBucket, result)
-    });
+    if(oldestNodeInTheBucket) {
+        communicator.sendPing(global.node, oldestNodeInTheBucket, result => {
+            this.updateNodeAccordingToItsState(oldestNodeInTheBucket, result)
+        });
+    }
 };
 
 KBucket.prototype.updateNodeAccordingToItsState = function (nodeToUpdate, nodeState) {
     if (nodeState === NodeState.NOT_ALIVE) {
+        console.log("Node removed: " + nodeToUpdate.id);
         this.removeNode(nodeToUpdate);
     } else if (nodeState === NodeState.ALIVE) {
         this.updateNode(nodeToUpdate);

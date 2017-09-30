@@ -7,7 +7,6 @@ const StoredValueType = require("../../enum/storedValueType");
 
 exports.sendPing = function (senderNode, nodeToPing, callBack) {
     let requestRpcId = util.createRandomAlphaNumericIdentifier(20);
-
     let requestOptions = {
         method: "GET",
         uri: nodeToPing.ipAddr + ":" + nodeToPing.port + "/api/kademlia/info/ping",

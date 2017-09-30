@@ -4,7 +4,16 @@ const KBucket = require("./kbucket");
 function BucketManager() {
     this.buckets = [];
     this.createBuckets();
+    this.updateBucketsPeriodicaly();
 }
+
+BucketManager.prototype.updateBucketsPeriodicaly = function () {
+    setInterval(() => {
+        this.buckets.forEach(bucket => {
+            bucket.updateStateOfTheOldestNodeInTheBucket()
+        });
+    }, 10000);
+};
 
 BucketManager.prototype.printBuckets = function () {
     this.buckets.forEach(bucket => {
