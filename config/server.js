@@ -112,7 +112,7 @@ app.post(kademliaApiPath + "nodes/data", (request, response) => {
     let key = request.body.name;
     let value = request.body.value;
 
-    kademlia.storeValue(key, value, (closestNodes) => {
+    kademlia.storeValue(key, value, (closestNode) => {
         // notify
         response.status(HttpStatus.OK);
         response.send("post received!");

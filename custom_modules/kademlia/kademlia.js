@@ -6,8 +6,9 @@ function Kademlia() {
 
 Kademlia.prototype.storeValue = function (key, value, callback) {
     global.DataManager.storeValueWithKeyHashing(key, value);
-    dataPublisher.publishToKNodesClosestToTheKey(key, value, closestNodes =>{
-        callback(closestNodes);
+    dataPublisher.publishToKNodesClosestToTheKey(key, value, closestNodes => {
+        closestNodes = global.BucketManager.sortNodesListByDistanceAscending(key, closestNodes);
+        callback(closestNodes[0]);
     });
 };
 
@@ -35,7 +36,7 @@ Kademlia.prototype.handlePing = function (node, callback) {
     callback();
 };
 
-Kademlia.notifyTheClosestNode = function(key, callback){
+Kademlia.notifyTheClosestNode = function (key, callback) {
 
 };
 
