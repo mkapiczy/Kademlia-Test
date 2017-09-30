@@ -1,12 +1,9 @@
 let storeData = function () {
     document.getElementById("btnStore").disabled = true; 
-    let name = document.getElementById("name").value;
-    let value = document.getElementById("value").value;
-    
-    $.post("api/kademlia/data/endpoints", {name: name, value: value}, function(data) {
-        let test = data;
-        document.getElementById("name").value = "";
-        document.getElementById("value").value = "";
+    let endpoint = document.getElementById("endpoint").value;
+
+    $.post("api/kademlia/data/endpoints", {endpoint: endpoint}, function(data) {
+        document.getElementById("endpoint").value = "";
         document.getElementById("btnStore").disabled = false;
         // Update values
     });

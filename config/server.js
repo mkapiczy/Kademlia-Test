@@ -109,12 +109,25 @@ app.get(kademliaApiPath + "nodes/:id", (request, response) => {
 
 //STORE VALUE ENDPOINT
 app.post(kademliaApiPath + "data/endpoints", (request, response) => {
-    let key = request.body.name;
-    let value = request.body.value;
+    let endpoint = request.body.endpoint;
 
-    kademlia.storeValue(key, value, StoredValueType.ENDPOINT, global.EndpointManager, (closestNode) => {
+    //TODO To be refactored - extract this functionality to some other component
+    global.EndpointManager.storeValue(endpoint, endpoint);
+    setInterval(() => {
+        kademlia.isGlobalNodeTheClosest(endpoint, (result) => {
+            if (result) {
+                console.log("I am the closest to the endpoint!");
+                global.WoTManager.addWoTDevice(endpoint);
+            } else {
+                console.log("I am not the closest to the endpoint");
+                global.WoTManager.removeWoTDevice(endpoint);
+            }
+        });
+    }, 10000);
+
+    kademlia.storeValue(endpoint, endpoint, StoredValueType.ENDPOINT, global.EndpointManager, (closestNode) => {
         console.log("Send notification to: " + closestNode.id);
-        communicator.notifyClosestNode(closestNode, value, () => {
+        communicator.notifyClosestNode(closestNode, endpoint, () => {
         });
         response.status(HttpStatus.OK);
         response.send("post received!");

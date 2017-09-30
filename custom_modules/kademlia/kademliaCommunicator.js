@@ -74,7 +74,6 @@ exports.sendFindNode = function (closestToId, recipientNode, callBack) {
                             //Adding is handled in ping function
                         });
                     }
-
                 }, this);
                 console.log("Buckets after find node", global.BucketManager.buckets);
                 callBack(NodeState.ALIVE);
