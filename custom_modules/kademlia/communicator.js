@@ -1,7 +1,7 @@
 const request = require("request");
-const util = require("./util");
+const util = require("../util");
 
-const NodeState = require("./../enum/nodeStateEnum");
+const NodeState = require("../../enum/nodeStateEnum");
 const Node = require("./node")
 
 exports.sendPing = function (senderNode, nodeToPing, callBack) {
@@ -139,7 +139,7 @@ exports.sendStoreValue = function (recipientNode, key, value, callBack) {
             callBack(NodeState.ALIVE);
         }
     });
-}
+};
 
 exports.sendFindValue = function (recipientNode, key, callBack) {
     console.log("Send find value was called!");

@@ -1,5 +1,5 @@
-const constants = require("./../config/constants");
-const util = require("./util");
+const constants = require("../../config/constants");
+const util = require("../util");
 
 function DataManager() {
   this.dataStorage = new Map();

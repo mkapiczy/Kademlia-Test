@@ -1,5 +1,5 @@
-const BucketManager = require('./../custom_modules/BucketManager');
-const Node = require('./../custom_modules/node');
+const BucketManager = require('../custom_modules/kademlia/BucketManager');
+const Node = require('../custom_modules/kademlia/node');
 const constants = require('./../config/constants');
 const util = require('./../custom_modules/util');
 

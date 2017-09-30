@@ -5,12 +5,10 @@ const path = require("path");
 let swaggerTools = require("swagger-tools");
 let YAML = require("yamljs");
 
-const communicator = require("./../custom_modules/communicator");
-const Node = require("./../custom_modules/node");
-const DataPublisher = require("./../custom_modules/dataPublisher");
-const dataPublisher = new DataPublisher();
-
 const app = express();
+const Node = require("../custom_modules/kademlia/node");
+const Kademlia = require("../custom_modules/kademlia/kademlia");
+const kademlia = new Kademlia();
 
 const apiPath = "/api/kademlia/";
 
@@ -75,15 +73,15 @@ app.get(apiPath + "info/ping", (request, response) => {
         request.body.nodePort
     );
 
-    global.BucketManager.updateNodeInBuckets(requestNode);
-
-    response.status(HttpStatus.OK);
-    response.json({
-        nodeId: global.node.id,
-        rpcId: request.body.rpcId,
-        msg: "PONG"
+    kademlia.handlePing(requestNode, () => {
+        response.status(HttpStatus.OK);
+        response.json({
+            nodeId: global.node.id,
+            rpcId: request.body.rpcId,
+            msg: "PONG"
+        });
+        console.log("Buckets", global.BucketManager.buckets);
     });
-    console.log("Buckets", global.BucketManager.buckets);
 });
 
 //FIND NODE ENDPOINT
@@ -97,14 +95,14 @@ app.get(apiPath + "nodes/:id", (request, response) => {
         request.body.nodePort
     );
 
-    global.BucketManager.updateNodeInBuckets(requestNode);
-    closestNodes = global.BucketManager.getClosestNodes(request.params.id);
-    response.status(HttpStatus.OK);
-    response.setHeader("Content-Type", "application/json");
-    response.json({
-        nodeId: global.node.id,
-        rpcId: request.body.rpcId,
-        closestNodes: closestNodes
+    kademlia.getKClosestNodes(request.params.id, requestNode, (closestNodes) => {
+        response.status(HttpStatus.OK);
+        response.setHeader("Content-Type", "application/json");
+        response.json({
+            nodeId: global.node.id,
+            rpcId: request.body.rpcId,
+            closestNodes: closestNodes
+        });
     });
 });
 
@@ -112,8 +110,10 @@ app.get(apiPath + "nodes/:id", (request, response) => {
 app.post(apiPath + "nodes/data", (request, response) => {
     let key = request.body.name;
     let value = request.body.value;
-    global.DataManager.storeValueWithKeyHashing(key, value);
-    dataPublisher.publishToKNodesClosestToTheKey(key, value);
+
+    kademlia.storeValue(key, value);
+    // notify the closest node
+
     response.status(HttpStatus.OK);
     response.send("post received!");
 });
@@ -133,15 +133,8 @@ app.get(apiPath + "data", (request, response) => {
     if (value) {
         response.send({value: value, node: global.node.id});
     } else {
-        dataPublisher.findValue(key, (nodeId, value) => {
-            if (value) {
-                console.log("Value for the key " + key + " found in node " + nodeId);
-                console.log("Value: " + value);
-                response.send({value: value, node: nodeId});
-            } else {
-                console.log("Value for the key " + key + " not found!");
-                response.send({value: "", node: ""});
-            }
+        kademlia.findValue(key, (value, nodeId) => {
+            response.send({value: value, node: nodeId});
         });
     }
 });

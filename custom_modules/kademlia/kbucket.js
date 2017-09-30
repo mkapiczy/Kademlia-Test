@@ -1,7 +1,7 @@
-const constants = require("./../config/constants");
+const constants = require("../../config/constants");
 const communicator = require("./communicator");
 
-const NodeState = require("./../enum/nodeStateEnum");
+const NodeState = require("../../enum/nodeStateEnum");
 
 function KBucket(index) {
     this.index = index;

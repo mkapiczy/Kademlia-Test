@@ -1,9 +1,9 @@
 const util = require("./util");
-const Node = require("./node");
+const Node = require("./kademlia/node");
 const constants = require("./../config/constants");
-const BucketManager = require("./BucketManager");
-const DataManager = require("./DataManager");
-const communicator = require("./communicator");
+const BucketManager = require("./kademlia/BucketManager");
+const DataManager = require("./data/dataManager");
+const communicator = require("./kademlia/communicator");
 
 global.baseNode = new Node(
   constants.BASE_NODE_ID,

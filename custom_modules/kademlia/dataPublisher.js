@@ -1,5 +1,5 @@
-const constants = require("./../config/constants");
-const util = require("./util");
+const constants = require("../../config/constants");
+const util = require("../util");
 const communicator = require("./communicator");
 const async = require("async");
 

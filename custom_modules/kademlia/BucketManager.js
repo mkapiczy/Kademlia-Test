@@ -1,4 +1,4 @@
-const constants = require("./../config/constants");
+const constants = require("../../config/constants");
 const KBucket = require("./kbucket");
 
 function BucketManager() {
