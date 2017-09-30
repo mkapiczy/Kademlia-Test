@@ -13,9 +13,22 @@ DataPublisher.prototype.publishToKNodesClosestToTheKey = function (key, value, c
     let alphaNodes = global.BucketManager.getAlphaClosestNodes(hashedKey);
     if (alphaNodes.length === 0) return;
     sendAsyncFindNodes(alphaNodes, hashedKey, shortlist, null, resultShortlist => {
-        sendStoreValueToAllNodesInTheShortlist(resultShortlist, hashedKey, value, ()=>{
+        let nodesToStoreValue = removeGlobalNodeFromShortlist(resultShortlist);
+        sendStoreValueToAllNodesInTheShortlist(nodesToStoreValue, hashedKey, value, () => {
             callback(resultShortlist);
         });
+    });
+};
+
+DataPublisher.prototype.findClosestNodeToTheKye = function (key, callback) {
+    let shortlist = [];
+    let hashedKey = util.createHashFromKey(key, constants.B / 8);
+    console.log("Publish key: " + hashedKey);
+    let alphaNodes = global.BucketManager.getAlphaClosestNodes(hashedKey);
+    if (alphaNodes.length === 0) return;
+    sendAsyncFindNodes(alphaNodes, hashedKey, shortlist, null, resultShortlist => {
+        resultShortlist = global.BucketManager.sortNodesListByDistanceAscending(hashedKey, resultShortlist);
+        callback(resultShortlist[0]);
     });
 };
 
@@ -68,8 +81,7 @@ sendAsyncFindNodes = function (alphaNodes, hashedKey, shortlist, currentClosestN
             nextCallAlphaNodes = getNextCallAlphaNodesFromShortlist(shortlist);
             sendAsyncFindNodes(nextCallAlphaNodes, hashedKey, shortlist, currentClosestNode, callback);
         } else {
-            shortlist = removeGlobalNodeFromShortlist(shortlist);
-            shortlist = shortlist.slice(0, constants.k);
+            shortlist = shortlist.slice(0, constants.k + 1); // +1 because we leave the global node inside.
             callback(shortlist);
         }
     });
