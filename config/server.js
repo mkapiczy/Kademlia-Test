@@ -147,26 +147,6 @@ app.get(apiPath + "store/value", (request, response) => {
     response.json({value: value});
 });
 
-
-//Endpoint for testing ping operation
-app.get("/test/ping", (request, response) => {
-    communicator.sendPing(global.node, global.baseNode, function (result) {
-        response.status(HttpStatus.OK);
-        response.setHeader("Content-Type", "application/json");
-        response.json(JSON.stringify(result));
-    });
-});
-
-//Endpoint for testing ping operation
-app.get("/test/find_node", (request, response) => {
-    communicator.sendFindNode(global.node.id, global.baseNode, function (result) {
-        console.log(result);
-        response.status(HttpStatus.OK);
-        response.setHeader("Content-Type", "application/json");
-        response.json(JSON.stringify(result));
-    });
-});
-
 let swaggerDoc = YAML.load("openapi.yaml");
 swaggerTools.initializeMiddleware(swaggerDoc, function (middleware) {
     app.use(middleware.swaggerUi());
