@@ -4,9 +4,11 @@ const dataPublisher = new DataPublisher();
 function Kademlia() {
 }
 
-Kademlia.prototype.storeValue = function (key, value) {
+Kademlia.prototype.storeValue = function (key, value, callback) {
     global.DataManager.storeValueWithKeyHashing(key, value);
-    dataPublisher.publishToKNodesClosestToTheKey(key, value);
+    dataPublisher.publishToKNodesClosestToTheKey(key, value, closestNodes =>{
+        callback(closestNodes);
+    });
 };
 
 Kademlia.prototype.findValue = function (key, callback) {
@@ -31,6 +33,10 @@ Kademlia.prototype.getKClosestNodes = function (id, requestNode, callback) {
 Kademlia.prototype.handlePing = function (node, callback) {
     global.BucketManager.updateNodeInBuckets(node);
     callback();
+};
+
+Kademlia.notifyTheClosestNode = function(key, callback){
+
 };
 
 module.exports = Kademlia;

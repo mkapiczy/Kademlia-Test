@@ -112,11 +112,12 @@ app.post(kademliaApiPath + "nodes/data", (request, response) => {
     let key = request.body.name;
     let value = request.body.value;
 
-    kademlia.storeValue(key, value);
-    // notify the closest node
+    kademlia.storeValue(key, value, (closestNodes) => {
+        // notify
+        response.status(HttpStatus.OK);
+        response.send("post received!");
+    });
 
-    response.status(HttpStatus.OK);
-    response.send("post received!");
 });
 
 app.get(kademliaApiPath + "data", (request, response) => {
