@@ -109,7 +109,7 @@ app.get(kademliaApiPath + "nodes/:id", (request, response) => {
 });
 
 //STORE VALUE ENDPOINT
-app.post(kademliaApiPath + "nodes/data", (request, response) => {
+app.post(kademliaApiPath + "data/endpoints", (request, response) => {
     let key = request.body.name;
     let value = request.body.value;
 
@@ -123,7 +123,7 @@ app.post(kademliaApiPath + "nodes/data", (request, response) => {
 
 });
 
-app.get(kademliaApiPath + "data", (request, response) => {
+app.get(kademliaApiPath + "data/endpoints", (request, response) => {
     console.log("Find value request received: " + request.query.key);
     key = request.query.key;
     value = global.EndpointManager.findValueByNonHashedKey(key);
@@ -137,7 +137,7 @@ app.get(kademliaApiPath + "data", (request, response) => {
 });
 
 
-app.post(apiPath + "store/data", (request, response) => {
+app.post(apiPath + "store/data/endpoints", (request, response) => {
     console.log("Store value request received!");
     global.EndpointManager.storeValue(request.body.key, request.body.value);
     response.status(HttpStatus.OK);
@@ -145,7 +145,7 @@ app.post(apiPath + "store/data", (request, response) => {
 });
 
 
-app.get(apiPath + "store/value", (request, response) => {
+app.get(apiPath + "store/data/endpoints", (request, response) => {
     value = global.EndpointManager.findValueByHashedKey(request.body.key);
     response.json({value: value});
 });

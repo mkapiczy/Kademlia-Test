@@ -3,7 +3,7 @@ let storeData = function () {
     let name = document.getElementById("name").value;
     let value = document.getElementById("value").value;
     
-    $.post("api/kademlia/nodes/data", {name: name, value: value}, function(data) {
+    $.post("api/kademlia/data/endpoints", {name: name, value: value}, function(data) {
         let test = data;
         document.getElementById("name").value = "";
         document.getElementById("value").value = "";

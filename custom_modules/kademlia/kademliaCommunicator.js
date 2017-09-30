@@ -118,7 +118,7 @@ exports.sendStoreValue = function (recipientNode, key, value, valueType, callBac
         uri: recipientNode.ipAddr +
         ":" +
         recipientNode.port +
-        "/api/store/data",
+        "/api/store/data/endpoints",
         body: {
             nodeId: global.node.id,
             nodeIP: global.node.ipAddr,
@@ -150,7 +150,7 @@ exports.sendFindValue = function (recipientNode, key, callBack) {
         uri: recipientNode.ipAddr +
         ":" +
         recipientNode.port +
-        "/api/store/value",
+        "/api/store/data/endpoints",
         body: {
             nodeId: global.node.id,
             nodeIP: global.node.ipAddr,

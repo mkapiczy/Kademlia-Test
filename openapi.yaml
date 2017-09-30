@@ -35,7 +35,7 @@ paths:
           required: true
           schema:
             $ref: "#/definitions/bodyNode"
-  "/kademlia/nodes/data":
+  "/kademlia/data/endpoints":
     post:
       summary: Add new data to network
       operationId: publishvalue
@@ -72,7 +72,7 @@ paths:
         required: true
         schema:
           $ref: "#/definitions/ping"
-  "/kademlia/data":
+  "/kademlia/data/endpoints":
     get:
       summary: "Search for value in Kademlia network"
       description: "Search for value in Kademlia network"
@@ -89,25 +89,8 @@ paths:
         in: query
         type: string
         name: key
-        required: true
-    post:
-      summary: Add value to node
-      operationId: storevalue
-      consumes:
-        - application/json
-      produces:
-        - application/json
-      parameters:
-        - name: data
-          in: body
-          description: New data to be stored in node
-          schema: 
-            $ref: "#/definitions/postData"
-          required: true
-      responses: 
-        200: 
-          description: "200 response"  
-  "/store/value":
+        required: true  
+  "/store/data/endpoints":
     get:
       summary: "Search for value in node"
       description: "Search for value in Node"
@@ -124,7 +107,24 @@ paths:
         in: query
         type: string
         name: key
-        required: true          
+        required: true  
+    post:
+      summary: Add value to node
+      operationId: storevalue
+      consumes:
+        - application/json
+      produces:
+        - application/json
+      parameters:
+        - name: data
+          in: body
+          description: New data to be stored in node
+          schema: 
+            $ref: "#/definitions/postData"
+          required: true
+      responses: 
+        200: 
+          description: "200 response"        
 definitions:
   node:
     properties:
