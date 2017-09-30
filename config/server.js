@@ -138,10 +138,18 @@ app.get(kademliaApiPath + "data/endpoints", (request, response) => {
 
 
 app.post(apiPath + "store/data/endpoints", (request, response) => {
-    console.log("Store value request received!");
+    console.log("Store endpoint request received!");
     global.EndpointManager.storeValue(request.body.key, request.body.value);
     response.status(HttpStatus.OK);
-    response.send("post received!");
+    response.send("Endpoint stored!");
+});
+
+app.post(apiPath + "store/data/measurement", (request, response) => {
+    console.log("Store measurement request received!");
+    global.MeasurementManager.storeValue(request.body.key, request.body.value);
+    global.MeasurementManager.printData();
+    response.status(HttpStatus.OK);
+    response.send("Measurement stored!");
 });
 
 

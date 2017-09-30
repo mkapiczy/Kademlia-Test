@@ -1,7 +1,6 @@
 const request = require("request");
 
 const NodeState = require("../enum/nodeStateEnum");
-const Node = require("./kademlia/node");
 
 exports.notifyClosestNode = function (closestNode, endpoint, callBack) {
     let requestOptions = {

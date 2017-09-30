@@ -37,4 +37,10 @@ MeasurementManager.prototype.findValueByHashedKey = function (hashedKey) {
     return this.dataStorage.get(Number(hashedKey));
 };
 
+MeasurementManager.prototype.printData = function () {
+    this.dataStorage.forEach((value, key) => {
+        console.log(value);
+    })
+};
+
 module.exports = MeasurementManager;

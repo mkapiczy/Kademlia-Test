@@ -112,13 +112,17 @@ exports.sendGetClosestNodesRequest = function (closestToId, recipientNode, callB
 exports.sendStoreValue = function (recipientNode, key, value, valueType, callBack) {
     console.log("Send store value called!");
 
+    let uri = recipientNode.ipAddr + ":" + recipientNode.port;
+    if (valueType === "ENDPOINT") {
+        uri += "/api/store/data/endpoints";
+    } else if (valueType === "MEASUREMENT") {
+        uri += "/api/store/data/measurement"
+    }
+
     let requestRpcId = util.createRandomAlphaNumericIdentifier(20);
     let requestOptions = {
         method: "POST",
-        uri: recipientNode.ipAddr +
-        ":" +
-        recipientNode.port +
-        "/api/store/data/endpoints",
+        uri: uri,
         body: {
             nodeId: global.node.id,
             nodeIP: global.node.ipAddr,
