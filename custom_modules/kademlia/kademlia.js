@@ -39,8 +39,10 @@ Kademlia.prototype.handlePing = function (node, callback) {
     callback();
 };
 
-Kademlia.notifyTheClosestNode = function (key, callback) {
-
+Kademlia.prototype.isGlobalNodeTheClosest = function(endpoint, callback){
+    dataPublisher.findClosestNodeToTheKye(endpoint, (closestNode)=>{
+        callback(closestNode.id === global.node.id);
+    });
 };
 
 module.exports = Kademlia;

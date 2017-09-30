@@ -3,6 +3,7 @@ const util = require("../util");
 
 const NodeState = require("../../enum/nodeStateEnum");
 const Node = require("./node")
+const StoredValueType = require("../../enum/storedValueType");
 
 exports.sendPing = function (senderNode, nodeToPing, callBack) {
     let requestRpcId = util.createRandomAlphaNumericIdentifier(20);
@@ -22,6 +23,8 @@ exports.sendPing = function (senderNode, nodeToPing, callBack) {
     request(requestOptions, function (error, response) {
         if (error) {
             console.log(error);
+            console.log("Node with id: " + nodeToPing.id + " removed from the buckets!");
+            BucketManager.removeNodeFromTheBuckets(nodeToPing);
             callBack(NodeState.NOT_ALIVE);
         } else {
             console.log(response.body);
@@ -58,6 +61,7 @@ exports.sendFindNode = function (closestToId, recipientNode, callBack) {
     request(requestOptions, function (error, response) {
         if (error) {
             console.log(error);
+            BucketManager.removeNodeFromTheBuckets(recipientNode);
             callBack(NodeState.NOT_ALIVE);
         } else {
             console.log("Received closest nodes:", response.body.closestNodes);
@@ -102,6 +106,7 @@ exports.sendGetClosestNodesRequest = function (closestToId, recipientNode, callB
     request(requestOptions, function (error, response) {
         if (error) {
             console.log(error);
+            BucketManager.removeNodeFromTheBuckets(recipientNode);
             callBack(NodeState.NOT_ALIVE);
         } else {
             callBack(response.body.closestNodes);
@@ -110,15 +115,8 @@ exports.sendGetClosestNodesRequest = function (closestToId, recipientNode, callB
 };
 
 exports.sendStoreValue = function (recipientNode, key, value, valueType, callBack) {
-    console.log("Send store value called!");
-
-    let uri = recipientNode.ipAddr + ":" + recipientNode.port;
-    if (valueType === "ENDPOINT") {
-        uri += "/api/store/data/endpoints";
-    } else if (valueType === "MEASUREMENT") {
-        uri += "/api/store/data/measurement"
-    }
-
+    console.log("Send store value called for value type: " + valueType);
+    let uri = createUriBasedOnValueType(valueType, recipientNode);
     let requestRpcId = util.createRandomAlphaNumericIdentifier(20);
     let requestOptions = {
         method: "POST",
@@ -137,6 +135,7 @@ exports.sendStoreValue = function (recipientNode, key, value, valueType, callBac
     request(requestOptions, function (error, response) {
         if (error) {
             console.log(error);
+            BucketManager.removeNodeFromTheBuckets(recipientNode);
             callBack(NodeState.NOT_ALIVE);
         } else {
             console.log("Response in communicator: " + response);
@@ -168,9 +167,20 @@ exports.sendFindValue = function (recipientNode, key, callBack) {
     request(requestOptions, function (error, response) {
         if (error) {
             console.log(error);
+            BucketManager.removeNodeFromTheBuckets(recipientNode);
             callBack(NodeState.NOT_ALIVE);
         } else {
             callBack(response.body.value);
         }
     });
-}
+};
+
+createUriBasedOnValueType = function (valueType, recipientNode) {
+    let uri = recipientNode.ipAddr + ":" + recipientNode.port;
+    if (valueType === StoredValueType.ENDPOINT) {
+        uri += "/api/store/data/endpoints";
+    } else if (valueType === StoredValueType.MEASUREMENT) {
+        uri += "/api/store/data/measurement"
+    }
+    return uri;
+};

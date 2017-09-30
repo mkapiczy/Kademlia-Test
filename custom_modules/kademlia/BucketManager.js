@@ -19,6 +19,14 @@ BucketManager.prototype.updateNodeInBuckets = function (nodeToUpdate) {
     }
 };
 
+BucketManager.prototype.removeNodeFromTheBuckets = function (nodeToRemove) {
+    console.log("Node to remove id: " + nodeToRemove.id);
+    let bucketIndex = this.calculateBucketIndexForANode(nodeToRemove.id);
+    let bucket = this.buckets[bucketIndex]
+    if (bucket) {
+        bucket.removeNode(nodeToRemove);
+    }
+};
 BucketManager.prototype.calculateBucketIndexForANode = function (nodeId) {
     return Math.floor(
         Math.log2(this.distanceBetweenTwoNodes(nodeId, global.node.id))
