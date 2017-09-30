@@ -36,6 +36,23 @@ paths:
           schema:
             $ref: "#/definitions/bodyNode"
   "/kademlia/data/endpoints":
+    get:
+      summary: "Search for value in Kademlia network"
+      description: "Search for value in Kademlia network"
+      operationId: "N/A"
+      produces:
+      - "application/json"
+      responses:
+        200:
+          description: "OK"
+          schema:
+            $ref: "#/definitions/receivedValue"
+      parameters:
+      - description: "Name of the value to be found"
+        in: query
+        type: string
+        name: key
+        required: true 
     post:
       summary: Add new data to network
       operationId: publishvalue
@@ -71,25 +88,7 @@ paths:
         name: message
         required: true
         schema:
-          $ref: "#/definitions/ping"
-  "/kademlia/data/endpoints":
-    get:
-      summary: "Search for value in Kademlia network"
-      description: "Search for value in Kademlia network"
-      operationId: "N/A"
-      produces:
-      - "application/json"
-      responses:
-        200:
-          description: "OK"
-          schema:
-            $ref: "#/definitions/receivedValue"
-      parameters:
-      - description: "Name of the value to be found"
-        in: query
-        type: string
-        name: key
-        required: true  
+          $ref: "#/definitions/ping" 
   "/store/data/endpoints":
     get:
       summary: "Search for value in node"
