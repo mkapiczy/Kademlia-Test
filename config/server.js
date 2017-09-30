@@ -43,7 +43,7 @@ app.get("/", (request, response) => {
 //Data view
 app.get("/data", (request, response) => {
     let dataForView = [];
-    global.DataManager.dataStorage.forEach(function (value, key) {
+    global.EndpointManager.dataStorage.forEach(function (value, key) {
         dataForView.push({key: key, value: value});
     });
 
@@ -113,8 +113,8 @@ app.post(kademliaApiPath + "nodes/data", (request, response) => {
     let key = request.body.name;
     let value = request.body.value;
 
-    kademlia.storeValue(key, value, (closestNode) => {
-        // notify
+    kademlia.storeValue(key, value, "ENDPOINT", global.EndpointManager, (closestNode) => {
+        console.log("Send notification to: " + closestNode.id);
         communicator.notifyClosestNode(closestNode, value, () => {
         });
         response.status(HttpStatus.OK);
@@ -126,7 +126,7 @@ app.post(kademliaApiPath + "nodes/data", (request, response) => {
 app.get(kademliaApiPath + "data", (request, response) => {
     console.log("Find value request received: " + request.query.key);
     key = request.query.key;
-    value = global.DataManager.findValueByNonHashedKey(key);
+    value = global.EndpointManager.findValueByNonHashedKey(key);
     if (value) {
         response.send({value: value, node: global.node.id});
     } else {
@@ -139,14 +139,14 @@ app.get(kademliaApiPath + "data", (request, response) => {
 
 app.post(apiPath + "store/data", (request, response) => {
     console.log("Store value request received!");
-    global.DataManager.storeValue(request.body.key, request.body.value);
+    global.EndpointManager.storeValue(request.body.key, request.body.value);
     response.status(HttpStatus.OK);
     response.send("post received!");
 });
 
 
 app.get(apiPath + "store/value", (request, response) => {
-    value = global.DataManager.findValueByHashedKey(request.body.key);
+    value = global.EndpointManager.findValueByHashedKey(request.body.key);
     response.json({value: value});
 });
 
@@ -159,13 +159,13 @@ app.post(apiPath + "notification", (request, response) => {
 
 app.get("/test/wotData", (request, response) => {
 
-    if(request.accepts('json')) {
+    if (request.accepts('json')) {
         response.status(HttpStatus.OK);
         response.json({currentTime: Date.now(), humidity: 34, temperature: 20});
-    }  else {
+    } else {
         console.log("Wrong accept format");
     }
-    
+
 });
 
 let swaggerDoc = YAML.load("openapi.yaml");

@@ -15,7 +15,7 @@ WoTManager.prototype.addWoTDevice = function (endpoint) {
 function setupNodeCommunication(endpoint) {
     //Get data from WoT node http://localhost:8000/test/wotData
     communicator.getMeasurement(endpoint, (result) => {
-        global.MeasurementsDataManager.addMeasurement(result);
+        global.MeasurementManager.storeValueWithKeyHashing(endpoint, result);
     });
     //when return
 

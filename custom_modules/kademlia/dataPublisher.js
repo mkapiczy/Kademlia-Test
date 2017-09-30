@@ -6,7 +6,7 @@ const async = require("async");
 function DataPublisher() {
 }
 
-DataPublisher.prototype.publishToKNodesClosestToTheKey = function (key, value, callback) {
+DataPublisher.prototype.publishToKNodesClosestToTheKey = function (key, value, valueType, callback) {
     let shortlist = [];
     let hashedKey = util.createHashFromKey(key, constants.B / 8);
     console.log("Publish key: " + hashedKey);
@@ -14,7 +14,7 @@ DataPublisher.prototype.publishToKNodesClosestToTheKey = function (key, value, c
     if (alphaNodes.length === 0) return;
     sendAsyncFindNodes(alphaNodes, hashedKey, shortlist, null, resultShortlist => {
         let nodesToStoreValue = removeGlobalNodeFromShortlist(resultShortlist);
-        sendStoreValueToAllNodesInTheShortlist(nodesToStoreValue, hashedKey, value, () => {
+        sendStoreValueToAllNodesInTheShortlist(nodesToStoreValue, hashedKey, value, valueType, () => {
             callback(resultShortlist);
         });
     });
@@ -154,11 +154,11 @@ removeGlobalNodeFromShortlist = function (shortlist) {
     return shortlist;
 };
 
-sendStoreValueToAllNodesInTheShortlist = function (shortlist, hashedKey, value, callback) {
+sendStoreValueToAllNodesInTheShortlist = function (shortlist, hashedKey, value, valueType, callback) {
     let asyncCallsArray = [];
     shortlist.forEach(node => {
         asyncCallsArray.push(function (callback) {
-            communicator.sendStoreValue(node, hashedKey, value, result => {
+            communicator.sendStoreValue(node, hashedKey, value, valueType, result => {
                 callback(null, result);
             });
         });

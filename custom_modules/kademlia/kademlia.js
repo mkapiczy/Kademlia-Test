@@ -6,9 +6,9 @@ const util = require("../util");
 function Kademlia() {
 }
 
-Kademlia.prototype.storeValue = function (key, value, callback) {
-    global.DataManager.storeValueWithKeyHashing(key, value);
-    dataPublisher.publishToKNodesClosestToTheKey(key, value, closestNodes => {
+Kademlia.prototype.storeValue = function (key, value, valueType, dataManager, callback) {
+    dataManager.storeValueWithKeyHashing(key, value);
+    dataPublisher.publishToKNodesClosestToTheKey(key, value, valueType, closestNodes => {
         let hashedKey = util.createHashFromKey(key, constants.B / 8);
         closestNodes = global.BucketManager.sortNodesListByDistanceAscending(hashedKey, closestNodes);
         callback(closestNodes[0]);

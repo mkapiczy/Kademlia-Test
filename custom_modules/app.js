@@ -2,10 +2,10 @@ const util = require("./util");
 const Node = require("./kademlia/node");
 const constants = require("./../config/constants");
 const BucketManager = require("./kademlia/BucketManager");
-const DataManager = require("./data/dataManager");
+const EndpointManager = require("./data/endpointManager");
 const communicator = require("./kademlia/kademliaCommunicator");
 const WoTManager = require("./wotManager");
-const MeasurementsDataManager = require("./data/measurementsDataManager");
+const MeasurementManager = require("./data/measurementManager");
 
 global.baseNode = new Node(
   constants.BASE_NODE_ID,
@@ -14,9 +14,9 @@ global.baseNode = new Node(
 );
 
 global.BucketManager = new BucketManager();
-global.DataManager = new DataManager();
+global.EndpointManager = new EndpointManager();
+global.MeasurementManager = new MeasurementManager();
 global.WoTManager = new WoTManager();
-global.MeasurementsDataManager = new MeasurementsDataManager();
 
 exports.init = function(nodeIpAddr, nodePort) {
   if (nodePort !== constants.BASE_NODE_PORT) {

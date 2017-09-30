@@ -109,10 +109,10 @@ exports.sendGetClosestNodesRequest = function (closestToId, recipientNode, callB
     });
 };
 
-exports.sendStoreValue = function (recipientNode, key, value, callBack) {
+exports.sendStoreValue = function (recipientNode, key, value, valueType, callBack) {
     console.log("Send store value called!");
-    let requestRpcId = util.createRandomAlphaNumericIdentifier(20);
 
+    let requestRpcId = util.createRandomAlphaNumericIdentifier(20);
     let requestOptions = {
         method: "POST",
         uri: recipientNode.ipAddr +
