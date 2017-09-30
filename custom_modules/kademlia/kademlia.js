@@ -1,5 +1,6 @@
 const DataPublisher = require("../kademlia/dataPublisher");
 const dataPublisher = new DataPublisher();
+const util = require("../util");
 
 function Kademlia() {
 }
@@ -7,7 +8,8 @@ function Kademlia() {
 Kademlia.prototype.storeValue = function (key, value, callback) {
     global.DataManager.storeValueWithKeyHashing(key, value);
     dataPublisher.publishToKNodesClosestToTheKey(key, value, closestNodes => {
-        closestNodes = global.BucketManager.sortNodesListByDistanceAscending(key, closestNodes);
+        let hashedKey = util.createHashFromKey(key, constants.B / 8);
+        closestNodes = global.BucketManager.sortNodesListByDistanceAscending(hashedKey, closestNodes);
         callback(closestNodes[0]);
     });
 };
