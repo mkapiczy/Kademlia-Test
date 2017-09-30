@@ -118,7 +118,7 @@ exports.sendStoreValue = function (recipientNode, key, value, callBack) {
         uri: recipientNode.ipAddr +
         ":" +
         recipientNode.port +
-        "/api/kademlia/data",
+        "/api/store/data",
         body: {
             nodeId: global.node.id,
             nodeIP: global.node.ipAddr,
@@ -150,7 +150,7 @@ exports.sendFindValue = function (recipientNode, key, callBack) {
         uri: recipientNode.ipAddr +
         ":" +
         recipientNode.port +
-        "/api/kademlia/local_value",
+        "/api/store/value",
         body: {
             nodeId: global.node.id,
             nodeIP: global.node.ipAddr,

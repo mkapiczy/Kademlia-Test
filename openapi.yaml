@@ -5,7 +5,7 @@ info:
   title: "KademliaGolf"
   version: "1.0.0"
 # [END swagger]
-basePath: "/api/kademlia"
+basePath: "/api"
 consumes:
 - "application/json"
 produces:
@@ -13,7 +13,7 @@ produces:
 schemes:
 - "http"
 paths:
-  "/nodes/{:id}":
+  "/kademlia/nodes/{:id}":
     get:
       summary: "Find the k closest neighbours to node with id"
       description: "Find the k closest neighbours to node with id"
@@ -35,7 +35,7 @@ paths:
           required: true
           schema:
             $ref: "#/definitions/bodyNode"
-  "/nodes/data":
+  "/kademlia/nodes/data":
     post:
       summary: Add new data to network
       operationId: publishvalue
@@ -53,7 +53,7 @@ paths:
       responses: 
         200: 
           description: "200 response"
-  "/info/ping":
+  "/kademlia/info/ping":
     get:
       summary: "Ping the node from the URL"
       description: "Ping the node from the URL"
@@ -72,7 +72,7 @@ paths:
         required: true
         schema:
           $ref: "#/definitions/ping"
-  "/data":
+  "/kademlia/data":
     get:
       summary: "Search for value in Kademlia network"
       description: "Search for value in Kademlia network"
@@ -107,7 +107,7 @@ paths:
       responses: 
         200: 
           description: "200 response"  
-  "/local_value":
+  "/store/value":
     get:
       summary: "Search for value in node"
       description: "Search for value in Node"

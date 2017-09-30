@@ -5,7 +5,7 @@ let findData = function () {
     $.get("api/kademlia/data", {key: name}, function(data) {
         document.getElementById("name").value = "";
         document.getElementById("btnSearch").disabled = false;
-        if(data == "") {
+        if(data === "") {
             document.getElementById("result").value = "No results found!";
         } else {
             document.getElementById("result").value = data.value;

@@ -10,7 +10,8 @@ const Node = require("../custom_modules/kademlia/node");
 const Kademlia = require("../custom_modules/kademlia/kademlia");
 const kademlia = new Kademlia();
 
-const apiPath = "/api/kademlia/";
+const kademliaApiPath = "/api/kademlia/";
+const apiPath = "/api/";
 
 //public purposes
 app.set("views", path.join(__dirname, ".././views/"));
@@ -64,7 +65,7 @@ app.get("/find", (request, response) => {
 });
 
 //PING ENDPOINT
-app.get(apiPath + "info/ping", (request, response) => {
+app.get(kademliaApiPath + "info/ping", (request, response) => {
     console.log("Ping message from node ", request.body.nodeId);
     console.log("Buckets", global.BucketManager.buckets);
     requestNode = new Node(
@@ -85,7 +86,7 @@ app.get(apiPath + "info/ping", (request, response) => {
 });
 
 //FIND NODE ENDPOINT
-app.get(apiPath + "nodes/:id", (request, response) => {
+app.get(kademliaApiPath + "nodes/:id", (request, response) => {
     console.log("Find node message from node ", request.body.nodeId);
     console.log("closest to ", request.params.id);
     console.log("Buckets", global.BucketManager.buckets);
@@ -107,7 +108,7 @@ app.get(apiPath + "nodes/:id", (request, response) => {
 });
 
 //STORE VALUE ENDPOINT
-app.post(apiPath + "nodes/data", (request, response) => {
+app.post(kademliaApiPath + "nodes/data", (request, response) => {
     let key = request.body.name;
     let value = request.body.value;
 
@@ -118,15 +119,7 @@ app.post(apiPath + "nodes/data", (request, response) => {
     response.send("post received!");
 });
 
-// TODO Naming endpoints better for two different store value calls!!!
-app.post(apiPath + "data", (request, response) => {
-    console.log("Store value request received!");
-    global.DataManager.storeValue(request.body.key, request.body.value);
-    response.status(HttpStatus.OK);
-    response.send("post received!");
-});
-
-app.get(apiPath + "data", (request, response) => {
+app.get(kademliaApiPath + "data", (request, response) => {
     console.log("Find value request received: " + request.query.key);
     key = request.query.key;
     value = global.DataManager.findValueByNonHashedKey(key);
@@ -140,7 +133,15 @@ app.get(apiPath + "data", (request, response) => {
 });
 
 
-app.get(apiPath + "local_value", (request, response) => {
+app.post(apiPath + "store/data", (request, response) => {
+    console.log("Store value request received!");
+    global.DataManager.storeValue(request.body.key, request.body.value);
+    response.status(HttpStatus.OK);
+    response.send("post received!");
+});
+
+
+app.get(apiPath + "store/value", (request, response) => {
     value = global.DataManager.findValueByHashedKey(request.body.key);
     response.json({value: value});
 });
