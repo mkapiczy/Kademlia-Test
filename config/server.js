@@ -157,6 +157,17 @@ app.post(apiPath + "notification", (request, response) => {
     response.send("post received!");
 });
 
+app.get("/test/wotData", (request, response) => {
+
+    if(request.accepts('json')) {
+        response.status(HttpStatus.OK);
+        response.json({currentTime: Date.now(), humidity: 34, temperature: 20});
+    }  else {
+        console.log("Wrong accept format");
+    }
+    
+});
+
 let swaggerDoc = YAML.load("openapi.yaml");
 swaggerTools.initializeMiddleware(swaggerDoc, function (middleware) {
     app.use(middleware.swaggerUi());

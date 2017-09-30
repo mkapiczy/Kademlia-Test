@@ -27,3 +27,22 @@ exports.notifyClosestNode = function (closestNode, endpoint, callBack) {
         }
     });
 };
+
+exports.getMeasurement = function (endpoint, callBack) {
+    let requestOptions = {
+        method: "GET",
+        uri: endpoint, 
+        json: true
+    };
+
+    request(requestOptions, function (error, response) {
+        if (error) {
+            console.log(error);
+            callBack(NodeState.NOT_ALIVE);
+        } else {
+            console.log(response.body);
+            console.log("Response from notification ");
+            callBack(response.body);
+        }
+    });
+};
