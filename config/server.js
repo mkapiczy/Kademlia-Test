@@ -9,6 +9,7 @@ const app = express();
 const Node = require("../custom_modules/kademlia/node");
 const Kademlia = require("../custom_modules/kademlia/kademlia");
 const kademlia = new Kademlia();
+const communicator = require('../custom_modules/communicator');
 
 const kademliaApiPath = "/api/kademlia/";
 const apiPath = "/api/";
@@ -114,6 +115,8 @@ app.post(kademliaApiPath + "nodes/data", (request, response) => {
 
     kademlia.storeValue(key, value, (closestNode) => {
         // notify
+        communicator.notifyClosestNode(closestNode, value, () => {
+        });
         response.status(HttpStatus.OK);
         response.send("post received!");
     });
@@ -145,6 +148,13 @@ app.post(apiPath + "store/data", (request, response) => {
 app.get(apiPath + "store/value", (request, response) => {
     value = global.DataManager.findValueByHashedKey(request.body.key);
     response.json({value: value});
+});
+
+app.post(apiPath + "notification", (request, response) => {
+    console.log("Notification received");
+    global.WoTManager.addWoTDevice(request.body.endpoint);
+    response.status(HttpStatus.OK);
+    response.send("post received!");
 });
 
 let swaggerDoc = YAML.load("openapi.yaml");

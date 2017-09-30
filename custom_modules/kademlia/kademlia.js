@@ -1,4 +1,5 @@
 const DataPublisher = require("../kademlia/dataPublisher");
+const constants = require("../../config/constants");
 const dataPublisher = new DataPublisher();
 const util = require("../util");
 
