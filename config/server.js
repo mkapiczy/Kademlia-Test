@@ -111,8 +111,6 @@ app.get(kademliaApiPath + "nodes/:id", (request, response) => {
 app.post(kademliaApiPath + "data/endpoints", (request, response) => {
     let endpoint = request.body.endpoint;
 
-    //TODO To be refactored - extract this functionality to some other component
-    global.EndpointManager.storeValue(endpoint, endpoint);
     setInterval(() => {
         kademlia.isGlobalNodeTheClosest(endpoint, (result) => {
             if (result) {
