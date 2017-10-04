@@ -5,8 +5,11 @@ html
 		link(rel="stylesheet", href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap-theme.min.css", integrity="sha384-fLW2N01lMqjakBkx3l/M9EahuwpSfeNvV63J5ezn3uZzapT0u7EYsXMjQV+0En5r", crossorigin="anonymous")
 		script(src="https://code.jquery.com/jquery-2.2.4.js", integrity="sha256-iT6Q9iMJYuQiMWNd9lDyBUStIq/8PuOW33aOqmvFpqI=", crossorigin="anonymous")
 		script(src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js", integrity="sha384-0mSbJDEHialfmuBBQP6A4Qrprq5OVfW37PRR3j5ELqxss1yVqOtnepnHVP9aJ7xS", crossorigin="anonymous")
-		script(src="/views/js/dataViewJs.js")
-	body
+		script(type="text/javascript", src="/views/js/dataViewJs.js")
+		script(src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js")
+		script(type="text/javascript", src="https://www.google.com/jsapi?autoload={'modules':[{'name':'visualization','version':'1','packages':['corechart']}]}")
+		
+	body(onLoad="onLoad()")
 		.container
 			div
 				br
@@ -57,22 +60,15 @@ html
 						div
 							b Data: 
 								each data in dataStorage
-									div.col-md-3
+									
 										.panel.panel-success
 											.panel-heading Key: #{data.key}
 											.panel-body 
 												div
-													p
-													|	Value: #{data.value}
-						hr
-						div
-							b Measurements: 
-								each WoTDevice in measurements
-									div.col-md-3
-										.panel.panel-success
-											.panel-heading Key: #{WoTDevice.key}
-											.panel-body 
-												div
-													each measurement in WoTDevice.value
+													a(href=data.value)
 														p
-														|	Value: #{measurement.temperature}
+														|	WoT Device: #{data.value}
+						hr
+						div(id="chart" style="width: 900px; height: 500px")
+							b Measurements:
+								div(id="chart" style="width: 900px; height: 500px")

@@ -48,19 +48,24 @@ app.get("/data", (request, response) => {
         dataForView.push({key: key, value: value});
     });
 
-    global.MeasurementManager.dataStorage.forEach(function (value, key) {
-        console.log("VALUEee: " + value[0]);
-        measurementsForView.push({key: key, value: value});
-    });
-
     console.log("MEASUREMENT MANAGER: " + global.MeasurementManager.dataStorage);
     response.render("dataView", {
         title: "Hey!",
         message: "This works :-)",
         node: global.node,
         dataStorage: dataForView,
-        measurements: measurementsForView
     });
+});
+
+app.get("/data/measurements", (request, response) => {
+    let measurementsForView = [];
+
+    global.MeasurementManager.dataStorage.forEach(function (value, key) {
+        console.log("VALUEee: " + value[0]);
+        measurementsForView.push({key: key, value: value});
+    });
+
+    response.send(measurementsForView);
 });
 
 app.get("/find", (request, response) => {
