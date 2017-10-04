@@ -60,7 +60,6 @@ app.get("/data/measurements", (request, response) => {
     let measurementsForView = [];
 
     global.MeasurementManager.dataStorage.forEach(function (value, key) {
-        console.log("VALUEee: " + value[0]);
         measurementsForView.push({key: key, value: value});
     });
 

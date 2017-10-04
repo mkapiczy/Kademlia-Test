@@ -1,12 +1,12 @@
 function onLoad() {
-    var maxDataPoints = 100000;
-    var chart = new google.visualization.LineChart($('#chart')[0]);
-    var chartData = google.visualization.arrayToDataTable([
+    const maxDataPoints = 100000;
+    let chart = new google.visualization.LineChart($('#chart')[0]);
+    let chartData = google.visualization.arrayToDataTable([
         ['Time', 'Temperature', 'Humidity'],
         [getTime("0"), 0.0, 0.0]
     ]);
 
-    var options = { 
+    let options = {
         title: 'Measurement',
         curveType: 'function',
         animation: {
@@ -26,14 +26,14 @@ function onLoad() {
     }
 
     function getTime(time) {
-        var d = new Date(time);
+        let d = new Date(time);
         return d.toLocaleTimeString();
     }
 
     function doPoll() {
         $.get("data/measurements", function (response) {
             response.forEach(function (wotDevice) {
-                var measurements = wotDevice.value;
+                let measurements = wotDevice.value;
                 measurements.forEach(function (measurement) {
                     addDataPoint(measurement.currentTime, measurement.humidity, measurement.temperature);
                 });

@@ -1,8 +1,6 @@
 const constants = require("../../config/constants");
 const communicator = require("./kademliaCommunicator");
 
-const NodeState = require("../../enum/nodeStateEnum");
-
 function KBucket(index) {
     this.index = index;
     this.nodesList = [];
