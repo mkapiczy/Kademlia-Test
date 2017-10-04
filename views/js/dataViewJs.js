@@ -3,7 +3,7 @@ function onLoad() {
     var chart = new google.visualization.LineChart($('#chart')[0]);
     var chartData = google.visualization.arrayToDataTable([
         ['Time', 'Temperature', 'Humidity'],
-        [getTime("0"), 0, 0]
+        [getTime("0"), 0.0, 0.0]
     ]);
 
     var options = { 
@@ -22,7 +22,7 @@ function onLoad() {
         if (chartData.getNumberOfRows() > maxDataPoints) {
             chartData.removeRow(0);
         }
-        chartData.addRow([getTime(time), temperature, humidity]);
+        chartData.addRow([getTime(time), parseFloat(temperature), parseFloat(humidity)]);
     }
 
     function getTime(time) {
@@ -37,7 +37,7 @@ function onLoad() {
                 measurements.forEach(function (measurement) {
                     addDataPoint(measurement.currentTime, measurement.humidity, measurement.temperature);
                 });
-                chart.draw(tempData, options);
+                chart.draw(chartData, options);
             }, this);
         });
     }
