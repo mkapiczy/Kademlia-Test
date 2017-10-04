@@ -8,8 +8,7 @@ function WoTManager() {
 }
 
 WoTManager.prototype.addWoTDevice = function (endpoint) {
-    let node = getWoTNodeByEndpoint(endpoint, this.wotNodes);
-    if (!node) {
+    if (!this.isWoTNodeWithGivenEndpointPresent(endpoint)) {
         let intervalId = setInterval(() => {
             setupNodeCommunication(endpoint)
         }, 5000);
@@ -19,8 +18,7 @@ WoTManager.prototype.addWoTDevice = function (endpoint) {
 };
 
 WoTManager.prototype.removeWoTDevice = function (endpoint) {
-    let deviceToRemove = getWoTNodeByEndpoint(endpoint, this.wotNodes);
-    if (deviceToRemove) {
+    if (this.isWoTNodeWithGivenEndpointPresent(endpoint)) {
         let index = this.wotNodes.indexOf(deviceToRemove);
         if (index > -1) {
             clearInterval(deviceToRemove.interval);
@@ -29,12 +27,14 @@ WoTManager.prototype.removeWoTDevice = function (endpoint) {
     }
 };
 
-getWoTNodeByEndpoint = function (endpoint, wotNodes) {
-    wotNodes.forEach(node => {
-        if (node.endpoint === endpoint) {
-            return node;
+WoTManager.prototype.isWoTNodeWithGivenEndpointPresent = function (endpoint) {
+    for (let i=0; i < this.wotNodes.length; i++) {
+        let node = this.wotNodes[i];
+        if (node.endpoint.localeCompare(endpoint) === 0) {
+            return true;
         }
-    })
+    }
+    return false;
 };
 
 function setupNodeCommunication(endpoint) {
