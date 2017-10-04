@@ -1,13 +1,13 @@
 function onLoad() {
     var maxDataPoints = 100000;
     var chart = new google.visualization.LineChart($('#chart')[0]);
-    var data = google.visualization.arrayToDataTable([
-        ['Time', 'Temperature'],
-        [getTime("0"), 0]
+    var chartData = google.visualization.arrayToDataTable([
+        ['Time', 'Temperature', 'Humidity'],
+        [getTime("0"), 0, 0]
     ]);
 
     var options = { 
-        title: 'Temperature',
+        title: 'Measurement',
         curveType: 'function',
         animation: {
             duration: 1000,
@@ -19,10 +19,10 @@ function onLoad() {
     };
 
     function addDataPoint(time, humidity, temperature) { 
-        if (data.getNumberOfRows() > maxDataPoints) {
-            data.removeRow(0);
+        if (chartData.getNumberOfRows() > maxDataPoints) {
+            chartData.removeRow(0);
         }
-        data.addRow([getTime(time), temperature]);
+        chartData.addRow([getTime(time), temperature, humidity]);
     }
 
     function getTime(time) {
@@ -37,7 +37,7 @@ function onLoad() {
                 measurements.forEach(function (measurement) {
                     addDataPoint(measurement.currentTime, measurement.humidity, measurement.temperature);
                 });
-                chart.draw(data, options); 
+                chart.draw(tempData, options);
             }, this);
         });
     }
