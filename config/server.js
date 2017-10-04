@@ -43,7 +43,6 @@ app.get("/", (request, response) => {
 
 app.get("/data", (request, response) => {
     let dataForView = [];
-    let measurementsForView = [];
     global.EndpointManager.dataStorage.forEach(function (value, key) {
         dataForView.push({key: key, value: value});
     });
