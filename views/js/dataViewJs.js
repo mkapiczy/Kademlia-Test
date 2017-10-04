@@ -2,7 +2,7 @@ function onLoad() {
     const maxDataPoints = 100000;
     let chart = new google.visualization.LineChart($('#chart')[0]);
     let chartData = google.visualization.arrayToDataTable([
-        ['Time', 'Temperature', 'Humidity'],
+        ['Time', 'Temperature (celsius)', 'Humidity (%)'],
         [getTime("0"), 0.0, 0.0]
     ]);
 
