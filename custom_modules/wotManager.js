@@ -10,7 +10,6 @@ function WoTManager() {
 WoTManager.prototype.addWoTDevice = function (endpoint) {
     let node = getWoTNodeByEndpoint(endpoint, this.wotNodes);
     if (!node) {
-        this.wotNodes.push(endpoint);
         let intervalId = setInterval(() => {
             setupNodeCommunication(endpoint)
         }, 5000);

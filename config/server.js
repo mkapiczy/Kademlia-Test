@@ -43,15 +43,23 @@ app.get("/", (request, response) => {
 
 app.get("/data", (request, response) => {
     let dataForView = [];
+    let measurementsForView = [];
     global.EndpointManager.dataStorage.forEach(function (value, key) {
         dataForView.push({key: key, value: value});
     });
 
+    global.MeasurementManager.dataStorage.forEach(function (value, key) {
+        console.log("VALUEee: " + value[0]);
+        measurementsForView.push({key: key, value: value});
+    });
+
+    console.log("MEASUREMENT MANAGER: " + global.MeasurementManager.dataStorage);
     response.render("dataView", {
         title: "Hey!",
         message: "This works :-)",
         node: global.node,
-        dataStorage: dataForView
+        dataStorage: dataForView,
+        measurements: measurementsForView
     });
 });
 

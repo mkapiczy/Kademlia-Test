@@ -64,3 +64,15 @@ html
 												div
 													p
 													|	Value: #{data.value}
+						hr
+						div
+							b Measurements: 
+								each WoTDevice in measurements
+									div.col-md-3
+										.panel.panel-success
+											.panel-heading Key: #{WoTDevice.key}
+											.panel-body 
+												div
+													each measurement in WoTDevice.value
+														p
+														|	Value: #{measurement.temperature}
