@@ -91,8 +91,8 @@ paths:
           $ref: "#/definitions/ping" 
   "/store/data/endpoints":
     get:
-      summary: "Search for value in node"
-      description: "Search for value in Node"
+      summary: "Search for endpoint in node"
+      description: "Search for endpoint in Node"
       operationId: "N/A"
       produces:
       - "application/json"
@@ -102,13 +102,13 @@ paths:
           schema:
             $ref: "#/definitions/receivedValue"
       parameters:
-      - description: "Name of the value to be found"
+      - description: "Name of the endpoint to be found"
         in: query
         type: string
         name: key
         required: true  
     post:
-      summary: Add value to node
+      summary: Add endpoint to node
       operationId: storevalue
       consumes:
         - application/json
@@ -117,13 +117,49 @@ paths:
       parameters:
         - name: data
           in: body
-          description: New data to be stored in node
+          description: New endpoint to be stored in node
           schema: 
             $ref: "#/definitions/postData"
           required: true
       responses: 
         200: 
-          description: "200 response"        
+          description: "200 response"
+  "/store/data/measurement":
+        post:
+          summary: Add measurement to node
+          operationId: storevalue
+          consumes:
+            - application/json
+          produces:
+            - application/json
+          parameters:
+            - name: data
+              in: body
+              description: New measurement to be stored in node
+              schema:
+                $ref: "#/definitions/receivedMeasurement"
+              required: true
+          responses:
+            200:
+              description: "200 response"
+  "/store/data/notification":
+      post:
+        summary: Notify node that is it the closest to IoT Device
+        operationId: storevalue
+        consumes:
+          - application/json
+        produces:
+          - application/json
+        parameters:
+          - name: data
+            in: body
+            description: New data to be stored in node
+            schema:
+              $ref: "#/definitions/receivedNotification"
+            required: true
+        responses:
+          200:
+            description: "200 response"
 definitions:
   node:
     properties:
@@ -200,3 +236,16 @@ definitions:
       key:
         type: "string"
         description: "Name of the data to be found"
+  receivedNotification:
+      properties:
+        endpoint:
+          type: "string"
+          description: "Endpoint"
+  receivedMeasurement:
+      properties:
+        key:
+          type: "string"
+          description: "Hashed endpoint"
+        value:
+          type: "object"
+          description: "timestamp, humidity and temperature"
